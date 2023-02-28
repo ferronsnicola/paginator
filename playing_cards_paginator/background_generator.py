@@ -29,7 +29,6 @@ def get_bg_with_cut_lines(bg_height: int, bg_width: int, cards_height: int, card
     height_spacing = (bg_height - n_vertical_cards * cards_height) / (n_vertical_cards + 1)  # float
     width_spacing = (bg_width - n_horizontal_cards * cards_width) / (n_horizontal_cards + 1)  # float
 
-
     y = height_spacing
     while y <= bg_height:
         yy = int(round(y))
@@ -64,22 +63,30 @@ def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
     if format not in print_formats:
         raise Exception('Unknown format!')
     
-    h_mm, w_mm = print_formats['format']
+    h_mm, w_mm = print_formats[format]
     return get_white_bg_mm(h_mm, w_mm, dpi)
 
 
 def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -> cv.Mat:
-    h_pixel = int(round(height_inch / dpi))
-    w_pixel = int(round(widht_inch / dpi))
+    h_pixel = int(round(height_inch * dpi))
+    w_pixel = int(round(widht_inch * dpi))
 
     return get_white_bg(h_pixel, w_pixel)
     
 
 
 if __name__ == '__main__':
-    bg = get_bg_with_cut_lines(1000, 500, 220, 140)
+    backgrounds = []
+    backgrounds.append(get_bg_with_cut_lines(1000, 500, 220, 140))
+    backgrounds.append(get_white_bg(300, 200))
+    backgrounds.append(get_white_bg_format('A3', 300))
+    backgrounds.append(get_white_bg_format('A3', 150))
+    backgrounds.append(get_white_bg_format('A4', 300))
+    backgrounds.append(get_white_bg_inches(11.7, 8.3, 300))
+    backgrounds.append(get_white_bg_mm(297, 210, 300))
 
-    cv.imshow('test', bg)
+    for i in range(len(backgrounds)):
+        cv.imshow(f'test-{i}', backgrounds[i])
     cv.waitKey(0)
     
     
