@@ -14,13 +14,13 @@ print_formats = {
 }
 
 
-def get_white_bg(bg_height: int, bg_width: int):
+def get_white_bg(bg_height: int, bg_width: int) -> cv.Mat:
     result = np.ones(shape=(bg_height, bg_width, 3), dtype=np.uint8)
     result *= np.iinfo(result.dtype).max
     return result
     
 
-def get_bg_with_cut_lines(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0)):
+def get_bg_with_cut_lines(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0)) -> cv.Mat:
     result = get_white_bg(bg_height, bg_width)
     
     n_vertical_cards = bg_height // cards_height
@@ -53,14 +53,14 @@ def get_bg_with_cut_lines(bg_height: int, bg_width: int, cards_height: int, card
     return result
 
 
-def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300):
+def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300) -> cv.Mat:
     h_pixel = int(round((height_mm * dpi) / 25.4))
     w_pixel = int(round((width_mm * dpi) / 25.4))
 
     return get_white_bg(h_pixel, w_pixel)
 
 
-def get_white_bg_format(format: str, dpi: int = 300):
+def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
     if format not in print_formats:
         raise Exception('Unknown format!')
     
@@ -68,7 +68,7 @@ def get_white_bg_format(format: str, dpi: int = 300):
     return get_white_bg_mm(h_mm, w_mm, dpi)
 
 
-def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300):
+def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -> cv.Mat:
     h_pixel = int(round(height_inch / dpi))
     w_pixel = int(round(widht_inch / dpi))
 
