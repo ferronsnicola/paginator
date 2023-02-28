@@ -1,6 +1,18 @@
 import cv2 as cv
 import numpy as np
 
+print_formats = {
+    'junior-legal': (203, 127),
+    'letter': (279, 216),
+    'legal': (356, 216),
+    'tabloid': (432, 279),
+    'A4': (297, 210),
+    'A3': (420, 297),
+    'A2': (594, 420),
+    'A1': (841, 594),
+    'A0': (1189, 841)
+}
+
 
 def get_white_bg(bg_height: int, bg_width: int):
     result = np.ones(shape=(bg_height, bg_width, 3), dtype=np.uint8)
@@ -39,6 +51,29 @@ def get_bg_with_cut_lines(bg_height: int, bg_width: int, cards_height: int, card
         x += cards_width + width_spacing
 
     return result
+
+
+def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300):
+    h_pixel = int(round((height_mm * dpi) / 25.4))
+    w_pixel = int(round((width_mm * dpi) / 25.4))
+
+    return get_white_bg(h_pixel, w_pixel)
+
+
+def get_white_bg_format(format: str, dpi: int = 300):
+    if format not in print_formats:
+        raise Exception('Unknown format!')
+    
+    h_mm, w_mm = print_formats['format']
+    return get_white_bg_mm(h_mm, w_mm, dpi)
+
+
+def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300):
+    h_pixel = int(round(height_inch / dpi))
+    w_pixel = int(round(widht_inch / dpi))
+
+    return get_white_bg(h_pixel, w_pixel)
+    
 
 
 if __name__ == '__main__':
