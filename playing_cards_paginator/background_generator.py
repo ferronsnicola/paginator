@@ -20,11 +20,11 @@ def get_white_bg(bg_height: int, bg_width: int) -> cv.Mat:
     return result
     
 
-def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True) -> cv.Mat:
+def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True, cards_padding: int = 0) -> cv.Mat:
     result = get_white_bg(bg_height, bg_width)
     
-    n_vertical_cards = bg_height // cards_height
-    n_horizontal_cards = bg_width // cards_width
+    n_vertical_cards = bg_height // (cards_height + cards_padding)
+    n_horizontal_cards = bg_width // (cards_width + cards_padding)
 
     height_spacing = (bg_height - n_vertical_cards * cards_height) / (n_vertical_cards + 1)  # float
     width_spacing = (bg_width - n_horizontal_cards * cards_width) / (n_horizontal_cards + 1)  # float
@@ -66,14 +66,16 @@ def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300) -> cv.Mat
     return get_white_bg(h_pixel, w_pixel)
 
 
-def get_cut_bg_mm(height_mm: float, width_mm: float, ch_mm: float, cw_mm: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300) -> cv.Mat:
+def get_cut_bg_mm(height_mm: float, width_mm: float, ch_mm: float, cw_mm: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
     h_pixel = int(round((height_mm * dpi) / 25.4))
     w_pixel = int(round((width_mm * dpi) / 25.4))
 
     ch_pixel = int(round((ch_mm * dpi) / 25.4))
     cw_pixel = int(round((cw_mm * dpi) / 25.4))
 
-    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color)
+    cp_pixel = int(round(cards_padding * dpi) / 25.4)
+
+    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
 
 
 def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
@@ -84,7 +86,7 @@ def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
     return get_white_bg_mm(h_mm, w_mm, dpi)
 
 
-def get_cut_bg_format(format: str, cards_height: float, cards_width: float, cards_um: str, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300) -> cv.Mat:
+def get_cut_bg_format(format: str, cards_height: float, cards_width: float, cards_um: str, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
     if format not in print_formats:
         raise Exception('Unknown format!')
     
@@ -93,11 +95,11 @@ def get_cut_bg_format(format: str, cards_height: float, cards_width: float, card
     
     h_mm, w_mm = print_formats[format]
     if cards_um == 'mm':
-        return get_cut_bg_mm(h_mm, w_mm, cards_height, cards_width, cut_thickness, cut_color, dpi)
+        return get_cut_bg_mm(h_mm, w_mm, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
     elif cards_um == 'inch':
         h_inch = h_mm / 25.4
         w_inch = w_mm / 25.4
-        return get_cut_bg_inches(h_inch, w_inch, cards_height, cards_width, cut_thickness, cut_color, dpi)
+        return get_cut_bg_inches(h_inch, w_inch, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
 
 
 def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -> cv.Mat:
@@ -107,14 +109,16 @@ def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -
     return get_white_bg(h_pixel, w_pixel)
     
 
-def get_cut_bg_inches(height_inch: float, widht_inch: float, cards_height: float, cards_width: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300) -> cv.Mat:
+def get_cut_bg_inches(height_inch: float, widht_inch: float, cards_height: float, cards_width: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
     h_pixel = int(round(height_inch * dpi))
     w_pixel = int(round(widht_inch * dpi))
 
     ch_pixel = int(round(cards_height * dpi))
     cw_pixel = int(round(cards_width * dpi))
 
-    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color)
+    cp_pixel = int(round(cards_padding * dpi))
+
+    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
     
 
 
