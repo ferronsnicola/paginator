@@ -20,7 +20,7 @@ def get_white_bg(bg_height: int, bg_width: int) -> cv.Mat:
     return result
     
 
-def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0)) -> cv.Mat:
+def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True) -> cv.Mat:
     result = get_white_bg(bg_height, bg_width)
     
     n_vertical_cards = bg_height // cards_height
@@ -48,6 +48,13 @@ def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: in
         cv.line(img=result, pt1=(xx - w, 0), pt2=(xx - w, bg_height - 1), color=cut_color, thickness=cut_thickness)
 
         x += cards_width + width_spacing
+
+    if frame:
+        cv.line(img=result, pt1=(0, int(round(height_spacing / 2))), pt2=(bg_width-1, int(round(height_spacing / 2))), color=cut_color, thickness=cut_thickness)
+        cv.line(img=result, pt1=(0, bg_height - int(round(height_spacing / 2))), pt2=(bg_width-1, bg_height - int(round(height_spacing / 2))), color=cut_color, thickness=cut_thickness)
+        cv.line(img=result, pt1=(int(round(width_spacing / 2)), 0), pt2=(int(round(width_spacing / 2)), bg_height - 1), color=cut_color, thickness=cut_thickness)
+        cv.line(img=result, pt1=(bg_width - int(round(width_spacing / 2)), 0), pt2=(bg_width - int(round(width_spacing / 2)), bg_height - 1), color=cut_color, thickness=cut_thickness)
+
 
     return result
 
@@ -113,7 +120,7 @@ def get_cut_bg_inches(height_inch: float, widht_inch: float, cards_height: float
 
 if __name__ == '__main__':
     backgrounds = []
-    backgrounds.append(get_cut_bg(1000, 500, 220, 140))
+    backgrounds.append(get_cut_bg(1000, 500, 220, 140, frame=True))
     backgrounds.append(get_white_bg(300, 200))
 
     backgrounds.append(get_white_bg_format('A3', 300))
@@ -131,8 +138,8 @@ if __name__ == '__main__':
     backgrounds.append(get_cut_bg_mm(440, 310, 88, 63.5))
 
     for i in range(len(backgrounds)):
-        cv.imshow(f'test-{i}', backgrounds[i])
-        # cv.imwrite(f'test-{i}.png', backgrounds[i])
+        # cv.imshow(f'test-{i}', backgrounds[i])
+        cv.imwrite(f'test-{i}.png', backgrounds[i])
     cv.waitKey(0)
     
     
