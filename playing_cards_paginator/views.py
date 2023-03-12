@@ -23,6 +23,9 @@ def file_loader(request):
             return redirect('file_loader')
         else:
             message = 'The form is not valid. Fix the following error:'
+    elif request.method == 'GET':
+        print('DOWNLOOOOOADDDDD!!!!')
+        form = DeckForm()
     else:
         form = DeckForm()  # An empty, unbound form
 

@@ -47,6 +47,53 @@
             <p><input type="submit" value="Upload"/></p>
         </form>
 
+        <br>
+        <br>
+
+        <!-- Upload form. Note enctype attribute! -->
+        <form action="{% url "file_loader" %}" method=get" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ "Select export parameters and download the files" }}
+            <p>{{ form.non_field_errors }}</p>
+
+            <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
+            <p>
+                {{form.plotter_formats.errors}}
+                {{form.plotter_formats}}
+            </p>
+
+            <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
+            <p>
+                {{ form.cards_formats.errors }}
+                {{ form.cards_formats }}
+            </p>
+
+            <p>{{ form.padding.label_tag }} {{ form.padding.help_text }}</p>
+            <p>
+                {{ form.padding.errors }}
+                {{ form.padding }}
+            </p>
+
+            <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
+            <p>
+                {{ form.unit_of_measurement.errors }}
+                {{ form.unit_of_measurement }}
+            </p>
+
+            <p>{{ form.cut_lines.label_tag }} {{ form.cut_lines.help_text }}</p>
+            <p>
+                {{ form.cut_lines.errors }}
+                {{ form.cut_lines }}
+            </p>
+
+            <p>{{ form.frame_lines.label_tag }} {{ form.frame_lines.help_text }}</p>
+            <p>
+                {{ form.frame_lines.errors }}
+                {{ form.frame_lines }}
+            </p>
+
+            <p><input type="submit" value="Confirm&Download"/></p>
+        </form>
 
 
     </body>
