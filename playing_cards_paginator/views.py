@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from .models import BackFile, FrontFiles
 from .forms import DeckForm
+from django.conf import settings
 
 
 def file_loader(request):
@@ -10,11 +11,11 @@ def file_loader(request):
         form = DeckForm(request.POST, request.FILES)
         if form.is_valid():
             group_name = request.POST['name']
-            newdoc = BackFile(back=request.FILES['back'])
+            newdoc = BackFile(back=request.FILES['back'], group_name=group_name)
             newdoc.save()
 
             for front in request.FILES.getlist('fronts'):
-                newdoc = FrontFiles(front=front)
+                newdoc = FrontFiles(front=front, group_name=group_name)
                 newdoc.save()
 
 
