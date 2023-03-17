@@ -3,9 +3,9 @@ from django import forms
 
 class DeckForm(forms.Form):
     # LOAD
-    name = forms.CharField(label='Card group name')
-    fronts = forms.FileField(label='Select the folder with front files', widget=forms.ClearableFileInput(attrs={'multiple': True, 'webkitdirectory': True, 'directory': True}))
-    back = forms.FileField(label='Select a back file')
+    name = forms.CharField(label='Card group name', required=False)
+    fronts = forms.FileField(label='Select the folder with front files', widget=forms.ClearableFileInput(attrs={'multiple': True, 'webkitdirectory': True, 'directory': True}), required=False)
+    back = forms.FileField(label='Select a back file', required=False)
 
 
     # DOWNLOAD 
@@ -24,26 +24,26 @@ class DeckForm(forms.Form):
     cf = (
         ('Magic-Pokemon', 'Magic-Pokemon'),
         ('Yu-gi-oh!', 'Yu-gi-oh!'),
-        ('7 Wonder', '7 Wonder'),
+        ('7 Wonders', '7 Wonders'),
         ('57.5x89', '57.5x89'),
         ('56x87', '56x87'),
         ('manual', 'manual')
     )
-    plotter_formats = forms.ChoiceField(label='Plotter Format', choices=pf)
-    cards_formats = forms.ChoiceField(label='Cards Format', choices=cf)
+    plotter_formats = forms.ChoiceField(label='Plotter Format', choices=pf, required=False)
+    cards_formats = forms.ChoiceField(label='Cards Format', choices=cf, required=False)
     
     # these must be shown only if manual choice is selected
-    plotter_height = forms.IntegerField(widget=forms.NumberInput)
-    plotter_width = forms.IntegerField(widget=forms.NumberInput)
-    cards_height = forms.IntegerField(widget=forms.NumberInput)
-    cards_width = forms.IntegerField(widget=forms.NumberInput)
+    plotter_height = forms.IntegerField(widget=forms.NumberInput, required=False)
+    plotter_width = forms.IntegerField(widget=forms.NumberInput, required=False)
+    cards_height = forms.IntegerField(widget=forms.NumberInput, required=False)
+    cards_width = forms.IntegerField(widget=forms.NumberInput, required=False)
     
-    padding = forms.IntegerField(widget=forms.NumberInput)
+    padding = forms.IntegerField(widget=forms.NumberInput, required=False)
     ums = (
         ('mm', 'mm'),
         ('inches', 'inches')
     )
-    unit_of_measurement = forms.ChoiceField(label='Unit of Measurement', choices=ums)
+    unit_of_measurement = forms.ChoiceField(label='Unit of Measurement', choices=ums, required=False)
 
-    cut_lines = forms.BooleanField()
-    frame_lines = forms.BooleanField()
+    cut_lines = forms.BooleanField(required=False)
+    frame_lines = forms.BooleanField(required=False)
