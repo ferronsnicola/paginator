@@ -13,6 +13,7 @@ class BackFile(models.Model):
     session_id = models.CharField(max_length=255)
     group_name = models.CharField(max_length=255)
     back = models.FileField(upload_to=dynamic_path)
+    short_name = models.CharField(max_length=255)
 
 
 class FrontFiles(models.Model):
@@ -20,5 +21,6 @@ class FrontFiles(models.Model):
     session_id = models.CharField(max_length=255)
     group_name = models.CharField(max_length=255)
     front = models.FileField(upload_to=dynamic_path)
+    short_name = models.CharField(max_length=255)
 
 

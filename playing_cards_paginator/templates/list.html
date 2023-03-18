@@ -2,99 +2,127 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Minimal Django File Upload Example</title>
+        <title>Playing Cards Paginator</title>
+        <style>
+            .grid-container {
+                display: grid;
+                grid-template-columns: auto auto auto;
+                background-color: #2196F3;
+                padding: 10px;
+            }
+            .grid-item {
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(0, 0, 0, 0.8);
+                padding: 20px;
+                font-size: 18px;
+                text-align:left;
+            }
+        </style>
     </head>
 
     <body>
         <!-- List of uploaded documents -->
-        {% if documents %}
-            All documents in the database:
-            <ul>
-                {% for document in documents %}
-                    <li><a href="{{ document.back.url }}">{{ document.back.name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>No documents.</p>
-        {% endif %}
+        <nav>
+            {% if backs %}
+                All documents in the database:
+                <div class="grid-container">
+                    <ul class="grid-item">
+                        {% for back in backs %}
+                            <li><a href="{{ back.back.url }}" target="_blank">{{ back.short_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    <ul class="grid-item">
+                        {% for front in fronts %}
+                            <li><a href="{{ front.front.url }}" target="_blank">{{ front.short_name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>No documents.</p>
+            {% endif %}
+        </nav>
 
-        <!-- Upload form. Note enctype attribute! -->
-        <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ message }}
-            <p>{{ form.non_field_errors }}</p>
+        <div class="grid-container">
+            <!-- Upload form. Note enctype attribute! -->
+            <div class="grid-item">
+                <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ message_up }}
+                    <p>{{ form.non_field_errors }}</p>
 
-            <p>{{ form.name.label_tag }} {{ form.name.help_text }}</p>
-            <p>
-                {{form.name.errors}}
-                {{form.name}}
-            </p>
+                    <p>{{ form.name.label_tag }} {{ form.name.help_text }}</p>
+                    <p>
+                        {{form.name.errors}}
+                        {{form.name}}
+                    </p>
 
-            <p>{{ form.fronts.label_tag }} {{ form.fronts.help_text }}</p>
+                    <p>{{ form.fronts.label_tag }} {{ form.fronts.help_text }}</p>
 
-            <p>
-                {{ form.fronts.errors }}
-                {{ form.fronts }}
-            </p>
+                    <p>
+                        {{ form.fronts.errors }}
+                        {{ form.fronts }}
+                    </p>
 
-            <p>{{ form.back.label_tag }} {{ form.back.help_text }}</p>
+                    <p>{{ form.back.label_tag }} {{ form.back.help_text }}</p>
 
-            <p>
-                {{ form.back.errors }}
-                {{ form.back }}
-            </p>
+                    <p>
+                        {{ form.back.errors }}
+                        {{ form.back }}
+                    </p>
 
-            <p><input type="submit" value="Upload", name="upload"/></p>
-        </form>
+                    <p><input type="submit" value="Upload", name="upload"/></p>
+                </form>
+            </div>
 
-        <br>
-        <br>
+            <br>
+            <br>
 
-        <!-- Upload form. Note enctype attribute! -->
-        <form action="{% url "file_loader" %}" method=get" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ "Select export parameters and download the files" }}
-            <p>{{ form.non_field_errors }}</p>
+            <div class="grid-item">
+                <!-- Upload form. Note enctype attribute! -->
+                <form action="{% url "file_loader" %}" method=get" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ message_down }}
+                    <p>{{ form.non_field_errors }}</p>
 
-            <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
-            <p>
-                {{form.plotter_formats.errors}}
-                {{form.plotter_formats}}
-            </p>
+                    <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
+                    <p>
+                        {{form.plotter_formats.errors}}
+                        {{form.plotter_formats}}
+                    </p>
 
-            <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
-            <p>
-                {{ form.cards_formats.errors }}
-                {{ form.cards_formats }}
-            </p>
+                    <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
+                    <p>
+                        {{ form.cards_formats.errors }}
+                        {{ form.cards_formats }}
+                    </p>
 
-            <p>{{ form.padding.label_tag }} {{ form.padding.help_text }}</p>
-            <p>
-                {{ form.padding.errors }}
-                {{ form.padding }}
-            </p>
+                    <p>{{ form.padding.label_tag }} {{ form.padding.help_text }}</p>
+                    <p>
+                        {{ form.padding.errors }}
+                        {{ form.padding }}
+                    </p>
 
-            <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
-            <p>
-                {{ form.unit_of_measurement.errors }}
-                {{ form.unit_of_measurement }}
-            </p>
+                    <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
+                    <p>
+                        {{ form.unit_of_measurement.errors }}
+                        {{ form.unit_of_measurement }}
+                    </p>
 
-            <p>{{ form.cut_lines.label_tag }} {{ form.cut_lines.help_text }}</p>
-            <p>
-                {{ form.cut_lines.errors }}
-                {{ form.cut_lines }}
-            </p>
+                    <p>{{ form.cut_lines.label_tag }} {{ form.cut_lines.help_text }}</p>
+                    <p>
+                        {{ form.cut_lines.errors }}
+                        {{ form.cut_lines }}
+                    </p>
 
-            <p>{{ form.frame_lines.label_tag }} {{ form.frame_lines.help_text }}</p>
-            <p>
-                {{ form.frame_lines.errors }}
-                {{ form.frame_lines }}
-            </p>
+                    <p>{{ form.frame_lines.label_tag }} {{ form.frame_lines.help_text }}</p>
+                    <p>
+                        {{ form.frame_lines.errors }}
+                        {{ form.frame_lines }}
+                    </p>
 
-            <p><input type="submit" value="Confirm&Download", name="confirm&download"/></p>
-        </form>
-
-
+                    <p><input type="submit" value="Confirm&Download", name="confirm&download"/></p>
+                </form>
+            </div>
+        </div>
     </body>
 </html>

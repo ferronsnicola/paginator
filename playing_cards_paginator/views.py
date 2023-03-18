@@ -11,7 +11,8 @@ from django.http import HttpRequest
 
 
 def file_loader(request: HttpRequest):
-    message = 'Upload as many files as you want!'
+    message_up = 'Upload your playing card decks, each front file of the deck should be inside a folder.\nYou should then select a back file and a name for the deck (groupd of cards) to identify it!'
+    message_down = 'Select export parameters and download the files'
     if request.session.session_key is None:
         request.session.save()
     session_key = request.session.session_key
@@ -21,30 +22,30 @@ def file_loader(request: HttpRequest):
         form = DeckForm(request.POST, request.FILES)
         if form.is_valid():
             group_name = request.POST['name']
-            newdoc = BackFile(back=request.FILES['back'], group_name=group_name, session_id=session_key)
+            newdoc = BackFile(back=request.FILES['back'], group_name=group_name, session_id=session_key, short_name=f'{group_name}/back')
             newdoc.save()
 
             for front in request.FILES.getlist('fronts'):
-                newdoc = FrontFiles(front=front, group_name=group_name, session_id=session_key)
+                newdoc = FrontFiles(front=front, group_name=group_name, session_id=session_key, short_name=f'{group_name}/front')
                 newdoc.save()
 
 
             # Redirect to the document list after POST
             return redirect('file_loader')
         else:
-            message = 'The form is not valid. Fix the following error:'
+            message_up = 'The form is not valid. Fix the following error:'
     elif request.method == 'GET' and 'confirm&download' in request.GET:
         plotter_format = request.GET.get('plotter_formats', None)
         if plotter_format is not None:
 
-            cf = cards_formats.get_h_w_mm_from_format(request.GET.get('cards_formats', 'AAA'))
+            cf = cards_formats.get_h_w_mm_from_format(request.GET.get('cards_formats', None))
 
             pad = int(request.GET.get('padding', 0))
-            um = request.GET.get('unit_of_measurement', 'AAA')
+            um = request.GET.get('unit_of_measurement', None)
             cut_lines = request.GET.get('cut_lines', False)
             frame_lines = request.GET.get('frame_lines', False)
 
-            filepath = cards_placer.get_output_file(join(settings.MEDIA_ROOT, 'documents'), plotter_format, cf[0], cf[1], pad, frame_lines, um)
+            filepath = cards_placer.get_output_file(join(settings.MEDIA_ROOT, 'documents', session_key), plotter_format, cf[0], cf[1], pad, frame_lines, um)
             return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
@@ -53,9 +54,19 @@ def file_loader(request: HttpRequest):
         form = DeckForm()  # An empty, unbound form
 
     # Load documents for the list page
-    documents = BackFile.objects.filter(session_id=session_key)
+    backs = BackFile.objects.filter(session_id=session_key)
+    fronts = FrontFiles.objects.filter(session_id=session_key)
+
+    already_checked = set()
+    filtered_fronts = []
+    for front in fronts:
+        if front.short_name not in already_checked:
+            filtered_fronts.append(front)
+            already_checked.add(front.short_name)
+
+
 
     # Render list page with the documents and the form
-    context = {'documents': documents, 'form': form, 'message': message}
+    context = {'backs': backs, 'fronts': filtered_fronts, 'form': form, 'message_up': message_up, 'message_down': message_down}
     return render(request, 'list.html', context)
 
