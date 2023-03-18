@@ -1,9 +1,47 @@
 import cv2 as cv
-import background_generator as bgg
+from . import background_generator as bgg
 from os import listdir
 from os.path import isfile, join, isdir
-import um_conversions as umc
+from . import um_conversions as umc
+import os
+import shutil
 
+
+def get_output_file(base_dir: str, plotter_format, cards_height, cards_width, pad, frame_lines, um):
+    fronts = []
+    backs = []
+    fronts_dirs = [dir for dir in listdir(join(base_dir, 'fronts')) if isdir(join(base_dir, 'fronts', dir))]
+    backs_dirs = [dir for dir in listdir(join(base_dir, 'backs')) if isdir(join(base_dir, 'backs', dir))]
+
+    if len(fronts_dirs) != len(backs_dirs):
+        raise Exception(f'different number of backs and fronts source directories: fronts={len(fronts_dirs)}, backs={len(backs_dirs)}')
+    for i in range(len(fronts_dirs)):
+        if fronts_dirs[i] != backs_dirs[i]:
+            raise Exception(f'fronts and backs directories must have the same names in order to match correctly!')
+        
+    
+    for dir in fronts_dirs:
+        front_names = [card_name for card_name in listdir(join(base_dir, 'fronts', dir)) if isfile(join(base_dir, 'fronts', dir, card_name))]
+        back_name = [card_name for card_name in listdir(join(base_dir,  'backs', dir)) if isfile(join(base_dir, 'backs', dir, card_name))][0]
+        back = cv.imread(join(base_dir, 'backs', dir, back_name), cv.IMREAD_COLOR)
+
+        for front_name in front_names:
+            front = cv.imread(join(base_dir, 'fronts', dir, front_name), cv.IMREAD_COLOR)
+
+            fronts.append(front)
+            backs.append(back)
+
+    fronts, backs = get_files_from_format(plotter_format, cards_height, cards_width, fronts, backs, pad, frame_lines, cards_um=um)
+    if not os.path.exists(join(base_dir, 'output')):
+        os.mkdir(join(base_dir, 'output'))
+
+    for i in range(len(fronts)):
+        cv.imwrite(join(base_dir, 'output', f'front-{i}.png'), fronts[i])
+        cv.imwrite(join(base_dir, 'output', f'back-{i}.png'), backs[i])
+    
+    shutil.make_archive(join(base_dir, 'output'), 'zip', join(base_dir, 'output'))
+    shutil.rmtree(join(base_dir, 'output'))
+    return join(base_dir, 'output.zip')
 
 
 def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300) -> cv.Mat:
