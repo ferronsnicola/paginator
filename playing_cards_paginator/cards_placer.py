@@ -7,7 +7,7 @@ import os
 import shutil
 
 
-def get_output_file(base_dir: str, plotter_format, cards_height, cards_width, pad, frame_lines, um):
+def get_output_file(base_dir: str, plotter_format: str, cards_height: float, cards_width: float, pad: int, frame_lines: bool, um: str):
     fronts = []
     backs = []
     fronts_dirs = [dir for dir in listdir(join(base_dir, 'fronts')) if isdir(join(base_dir, 'fronts', dir))]
