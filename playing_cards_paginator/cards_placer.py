@@ -7,7 +7,7 @@ import os
 import shutil
 
 
-def get_output_file(base_dir: str, plotter_format: str, cards_height: float, cards_width: float, pad: int, frame_lines: bool, um: str):
+def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, cards_height: float, cards_width: float, pad: int, frame_lines: bool, um: str):
     fronts = []
     backs = []
     fronts_dirs = [dir for dir in listdir(join(base_dir, 'fronts')) if isdir(join(base_dir, 'fronts', dir))]
@@ -31,7 +31,7 @@ def get_output_file(base_dir: str, plotter_format: str, cards_height: float, car
             fronts.append(front)
             backs.append(back)
 
-    fronts, backs = get_files_from_format(plotter_format, cards_height, cards_width, fronts, backs, pad, frame_lines, cards_um=um)
+    fronts, backs = get_files_from_mm(plotter_height, plotter_width, cards_height, cards_width, fronts, backs, pad, frame_lines)
     if not os.path.exists(join(base_dir, 'output')):
         os.mkdir(join(base_dir, 'output'))
 

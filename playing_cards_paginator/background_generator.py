@@ -62,66 +62,66 @@ def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: in
     return result
 
 
-def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300) -> cv.Mat:
-    h_pixel = int(round((height_mm * dpi) / 25.4))
-    w_pixel = int(round((width_mm * dpi) / 25.4))
+# def get_white_bg_mm(height_mm: float, width_mm: float, dpi: int = 300) -> cv.Mat:
+#     h_pixel = int(round((height_mm * dpi) / 25.4))
+#     w_pixel = int(round((width_mm * dpi) / 25.4))
 
-    return get_white_bg(h_pixel, w_pixel)
-
-
-def get_cut_bg_mm(height_mm: float, width_mm: float, ch_mm: float, cw_mm: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
-    h_pixel = int(round((height_mm * dpi) / 25.4))
-    w_pixel = int(round((width_mm * dpi) / 25.4))
-
-    ch_pixel = int(round((ch_mm * dpi) / 25.4))
-    cw_pixel = int(round((cw_mm * dpi) / 25.4))
-
-    cp_pixel = int(round(cards_padding * dpi) / 25.4)
-
-    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
+#     return get_white_bg(h_pixel, w_pixel)
 
 
-def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
-    if format not in print_formats:
-        raise Exception('Unknown format!')
+# def get_cut_bg_mm(height_mm: float, width_mm: float, ch_mm: float, cw_mm: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
+#     h_pixel = int(round((height_mm * dpi) / 25.4))
+#     w_pixel = int(round((width_mm * dpi) / 25.4))
+
+#     ch_pixel = int(round((ch_mm * dpi) / 25.4))
+#     cw_pixel = int(round((cw_mm * dpi) / 25.4))
+
+#     cp_pixel = int(round(cards_padding * dpi) / 25.4)
+
+#     return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
+
+
+# def get_white_bg_format(format: str, dpi: int = 300) -> cv.Mat:
+#     if format not in print_formats:
+#         raise Exception('Unknown format!')
     
-    h_mm, w_mm = print_formats[format]
-    return get_white_bg_mm(h_mm, w_mm, dpi)
+#     h_mm, w_mm = print_formats[format]
+#     return get_white_bg_mm(h_mm, w_mm, dpi)
 
 
-def get_cut_bg_format(format: str, cards_height: float, cards_width: float, cards_um: str, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
-    if format not in print_formats:
-        raise Exception('Unknown format!')
+# def get_cut_bg_format(format: str, cards_height: float, cards_width: float, cards_um: str, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
+#     if format not in print_formats:
+#         raise Exception('Unknown format!')
     
-    if cards_um not in ['mm', 'inch']:
-        raise Exception('cards unit of measurement not valid, must be in [mm, inch]')
+#     if cards_um not in ['mm', 'inch']:
+#         raise Exception('cards unit of measurement not valid, must be in [mm, inch]')
     
-    h_mm, w_mm = print_formats[format]
-    if cards_um == 'mm':
-        return get_cut_bg_mm(h_mm, w_mm, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
-    elif cards_um == 'inch':
-        h_inch = h_mm / 25.4
-        w_inch = w_mm / 25.4
-        return get_cut_bg_inches(h_inch, w_inch, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
+#     h_mm, w_mm = print_formats[format]
+#     if cards_um == 'mm':
+#         return get_cut_bg_mm(h_mm, w_mm, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
+#     elif cards_um == 'inch':
+#         h_inch = h_mm / 25.4
+#         w_inch = w_mm / 25.4
+#         return get_cut_bg_inches(h_inch, w_inch, cards_height, cards_width, cut_thickness, cut_color, dpi, frame, cards_padding)
 
 
-def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -> cv.Mat:
-    h_pixel = int(round(height_inch * dpi))
-    w_pixel = int(round(widht_inch * dpi))
+# def get_white_bg_inches(height_inch: float, widht_inch: float, dpi: int = 300) -> cv.Mat:
+#     h_pixel = int(round(height_inch * dpi))
+#     w_pixel = int(round(widht_inch * dpi))
 
-    return get_white_bg(h_pixel, w_pixel)
+#     return get_white_bg(h_pixel, w_pixel)
     
 
-def get_cut_bg_inches(height_inch: float, widht_inch: float, cards_height: float, cards_width: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
-    h_pixel = int(round(height_inch * dpi))
-    w_pixel = int(round(widht_inch * dpi))
+# def get_cut_bg_inches(height_inch: float, widht_inch: float, cards_height: float, cards_width: float, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), dpi: int = 300, frame: bool = True, cards_padding: float = 0) -> cv.Mat:
+#     h_pixel = int(round(height_inch * dpi))
+#     w_pixel = int(round(widht_inch * dpi))
 
-    ch_pixel = int(round(cards_height * dpi))
-    cw_pixel = int(round(cards_width * dpi))
+#     ch_pixel = int(round(cards_height * dpi))
+#     cw_pixel = int(round(cards_width * dpi))
 
-    cp_pixel = int(round(cards_padding * dpi))
+#     cp_pixel = int(round(cards_padding * dpi))
 
-    return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
+#     return get_cut_bg(h_pixel, w_pixel, ch_pixel, cw_pixel, cut_thickness, cut_color, frame, cp_pixel)
     
 
 
@@ -130,19 +130,19 @@ if __name__ == '__main__':
     backgrounds.append(get_cut_bg(1000, 500, 220, 140, frame=True))
     backgrounds.append(get_white_bg(300, 200))
 
-    backgrounds.append(get_white_bg_format('A3', 300))
-    backgrounds.append(get_white_bg_format('A3', 150))
-    backgrounds.append(get_white_bg_format('A4', 300))
-    backgrounds.append(get_white_bg_inches(11.7, 8.3, 300))
-    backgrounds.append(get_white_bg_mm(297, 210, 300))
+    # backgrounds.append(get_white_bg_format('A3', 300))
+    # backgrounds.append(get_white_bg_format('A3', 150))
+    # backgrounds.append(get_white_bg_format('A4', 300))
+    # backgrounds.append(get_white_bg_inches(11.7, 8.3, 300))
+    # backgrounds.append(get_white_bg_mm(297, 210, 300))
 
-    backgrounds.append(get_cut_bg_format('A3', 89, 57.5, 'mm'))
-    backgrounds.append(get_cut_bg_format('A3', 88, 64, 'mm', dpi=150))
-    backgrounds.append(get_cut_bg_format('A4', 88, 63.5, 'mm'))
-    backgrounds.append(get_cut_bg_format('A4', 3.2, 2.2, 'inch'))
-    backgrounds.append(get_cut_bg_inches(11.7, 8.3, 3.2, 2.2))
-    backgrounds.append(get_cut_bg_mm(297, 210, 88, 63.5))
-    backgrounds.append(get_cut_bg_mm(440, 310, 88, 63.5))
+    # backgrounds.append(get_cut_bg_format('A3', 89, 57.5, 'mm'))
+    # backgrounds.append(get_cut_bg_format('A3', 88, 64, 'mm', dpi=150))
+    # backgrounds.append(get_cut_bg_format('A4', 88, 63.5, 'mm'))
+    # backgrounds.append(get_cut_bg_format('A4', 3.2, 2.2, 'inch'))
+    # backgrounds.append(get_cut_bg_inches(11.7, 8.3, 3.2, 2.2))
+    # backgrounds.append(get_cut_bg_mm(297, 210, 88, 63.5))
+    # backgrounds.append(get_cut_bg_mm(440, 310, 88, 63.5))
 
     for i in range(len(backgrounds)):
         # cv.imshow(f'test-{i}', backgrounds[i])

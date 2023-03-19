@@ -6,7 +6,7 @@
         <style>
             .grid-container {
                 display: grid;
-                grid-template-columns: 3fr auto 2fr;
+                grid-template-columns: 3fr auto 3fr;
                 background-color: #2196F3;
                 padding: 10px;
             }
@@ -23,23 +23,31 @@
     <body>
         <!-- List of uploaded documents -->
         <nav>
-            {% if backs %}
-                All documents in the database:
-                <div class="grid-container">
-                    <ul class="grid-item">
-                        {% for back in backs %}
-                            <li><a href="{{ back.back.url }}" target="_blank">{{ back.short_name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                    <ul class="grid-item">
-                        {% for front in fronts %}
-                            <li><a href="{{ front.front.url }}" target="_blank">{{ front.short_name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% else %}
-                <p>No documents.</p>
-            {% endif %}
+            <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if backs %}
+                    All your decks:
+                    <div class="grid-container">
+                        <ul class="grid-item">
+                            {% for back in backs %}
+                                <p><input type="submit" value="Delete" name="{{back.group_name}}"/></p>
+                            {% endfor %}
+                        </ul>
+                        <ul class="grid-item">
+                            {% for back in backs %}
+                                <a href="{{ back.back.url }}" target="_blank">{{ back.short_name }}</a>
+                            {% endfor %}
+                        </ul>
+                        <ul class="grid-item">
+                            {% for front in fronts %}
+                                <a href="{{ front.front.url }}" target="_blank">{{ front.short_name }}</a>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>No decks!</p>
+                {% endif %}
+            </form>
         </nav>
 
         <div class="grid-container">
@@ -84,29 +92,49 @@
                     {{ message_down }}
                     <p>{{ form.non_field_errors }}</p>
 
-                    <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
+                    <!-- <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
                     <p>
                         {{form.plotter_formats.errors}}
                         {{form.plotter_formats}}
-                    </p>
+                    </p> -->
+                    <p>{{ form.plotter_height.label_tag }} {{ form.plotter_height.help_text }}(mm)</p>
+                    <p>
+                        {{form.plotter_height.errors}}
+                        {{form.plotter_height}}
+                    </p> 
+                    <p>{{ form.plotter_width.label_tag }} {{ form.plotter_width.help_text }}(mm)</p>
+                    <p>
+                        {{form.plotter_width.errors}}
+                        {{form.plotter_width}}
+                    </p> 
 
-                    <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
+                    <!-- <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
                     <p>
                         {{ form.cards_formats.errors }}
                         {{ form.cards_formats }}
+                    </p> -->
+                    <p>{{ form.cards_height.label_tag }} {{ form.cards_height.help_text }}(mm)</p>
+                    <p>
+                        {{ form.cards_height.errors }}
+                        {{ form.cards_height }}
+                    </p>
+                    <p>{{ form.cards_width.label_tag }} {{ form.cards_width.help_text }}(mm)</p>
+                    <p>
+                        {{ form.cards_width.errors }}
+                        {{ form.cards_width }}
                     </p>
 
-                    <p>{{ form.padding.label_tag }} {{ form.padding.help_text }}</p>
+                    <p>{{ form.padding.label_tag }} {{ form.padding.help_text }} (mm)</p>
                     <p>
                         {{ form.padding.errors }}
                         {{ form.padding }}
                     </p>
 
-                    <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
+                    <!-- <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
                     <p>
                         {{ form.unit_of_measurement.errors }}
                         {{ form.unit_of_measurement }}
-                    </p>
+                    </p> -->
 
                     <p>{{ form.cut_lines.label_tag }} {{ form.cut_lines.help_text }}</p>
                     <p>
