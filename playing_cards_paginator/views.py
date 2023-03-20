@@ -99,6 +99,6 @@ def file_loader(request: HttpRequest):
 
 
     # Render list page with the documents and the form
-    context = {'backs': backs, 'fronts': filtered_fronts, 'form': form, 'message_up': message_up, 'message_down': message_down}
+    context = {'backs_fronts': zip(backs, filtered_fronts), 'form': form, 'message_up': message_up, 'message_down': message_down}
     return render(request, 'main_page.html', context)
 

@@ -17,6 +17,14 @@
                 font-size: 18px;
                 text-align:left;
             }
+            table, th, td {
+                width: auto;
+                text-align: left;
+                padding-right: 40px;
+                border-color: black;
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
         </style>
     </head>
 
@@ -25,27 +33,25 @@
         <nav>
             <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% if backs %}
+                {% if backs_fronts.0 %}
                     All your decks:
-                    <div class="grid-container">
-                        <ul class="grid-item">
-                            {% for back in backs %}
-                                <p><input type="submit" value="Delete" name="{{back.group_name}}"/></p>
-                            {% endfor %}
-                        </ul>
-                        <ul class="grid-item">
-                            {% for back in backs %}
-                                <a href="{{ back.back.url }}" target="_blank">{{ back.short_name }}</a>
-                            {% endfor %}
-                        </ul>
-                        <ul class="grid-item">
-                            {% for front in fronts %}
-                                <a href="{{ front.front.url }}" target="_blank">{{ front.short_name }}</a>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Back</th>
+                            <th>Front sample</th>
+                        </tr>
+
+                        {% for back, front in backs_fronts %}
+                            <tr>
+                                <td><p><input type="submit" value="Delete" name="{{back.group_name}}"/></p></td>
+                                <td><a href="{{ back.back.url }}" target="_blank">{{ back.group_name }}</a></td>
+                                <td><a href="{{ front.front.url }}" target="_blank">{{ front.group_name }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 {% else %}
-                    <p>No decks!</p>
+                    <p>There are no decks, load them below!</p>
                 {% endif %}
             </form>
         </nav>
