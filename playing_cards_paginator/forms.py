@@ -33,12 +33,12 @@ class DeckForm(forms.Form):
     cards_formats = forms.ChoiceField(label='Cards Format', choices=cf, required=False)
     
     # these must be shown only if manual choice is selected
-    plotter_height = forms.IntegerField(widget=forms.NumberInput, required=False)
-    plotter_width = forms.IntegerField(widget=forms.NumberInput, required=False)
-    cards_height = forms.IntegerField(widget=forms.NumberInput, required=False)
-    cards_width = forms.IntegerField(widget=forms.NumberInput, required=False)
+    plotter_height = forms.IntegerField(widget=forms.NumberInput, required=False, min_value=1)
+    plotter_width = forms.IntegerField(widget=forms.NumberInput, required=False, min_value=1)
+    cards_height = forms.IntegerField(widget=forms.NumberInput, required=False, min_value=1)
+    cards_width = forms.IntegerField(widget=forms.NumberInput, required=False, min_value=1)
     
-    padding = forms.IntegerField(widget=forms.NumberInput, required=False)
+    padding = forms.IntegerField(widget=forms.NumberInput, required=False, min_value=0)
     ums = (
         ('mm', 'mm'),
         ('inches', 'inches')

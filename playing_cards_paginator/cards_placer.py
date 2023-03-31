@@ -24,9 +24,20 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
         front_names = [card_name for card_name in listdir(join(base_dir, 'fronts', dir)) if isfile(join(base_dir, 'fronts', dir, card_name))]
         back_name = [card_name for card_name in listdir(join(base_dir,  'backs', dir)) if isfile(join(base_dir, 'backs', dir, card_name))][0]
         back = cv.imread(join(base_dir, 'backs', dir, back_name), cv.IMREAD_COLOR)
+        if back is None:
+            back_name = [card_name for card_name in listdir(join(base_dir,  'backs', dir)) if isfile(join(base_dir, 'backs', dir, card_name))][1]
+            back = cv.imread(join(base_dir, 'backs', dir, back_name), cv.IMREAD_COLOR)
+
+        if back.shape[1] > back.shape[0]:
+            back = cv.rotate(back, cv.ROTATE_90_CLOCKWISE)
 
         for front_name in front_names:
+            if not (front_name.endswith('.png') or front_name.endswith('.jpg') or front_name.endswith('.tif')):
+                continue
             front = cv.imread(join(base_dir, 'fronts', dir, front_name), cv.IMREAD_COLOR)
+
+            if front.shape[1] > front.shape[0]:
+                front = cv.rotate(front, cv.ROTATE_90_CLOCKWISE)
 
             fronts.append(front)
             backs.append(back)
@@ -68,16 +79,13 @@ def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list
     return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color)
     
 
-
-
-
-def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0)) -> cv.Mat:
+def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30) -> cv.Mat:
     result_front = []
     result_back = []
 
-    background = bgg.get_cut_bg(bg_height, bg_width, c_height, c_width, cut_thickness, cut_color, frame, pad)
-    vertical_spacing = bgg.get_spacing(bg_height, c_height, pad)
-    horizontal_spacing = bgg.get_spacing(bg_width, c_width, pad)
+    background = bgg.get_cut_bg(bg_height, bg_width, c_height, c_width, cut_thickness, cut_color, frame, pad, min_space)
+    vertical_spacing = bgg.get_spacing(bg_height, c_height, pad, min_space)
+    horizontal_spacing = bgg.get_spacing(bg_width, c_width, pad, min_space)
     
     count = 0
     while len(fronts) > 0:

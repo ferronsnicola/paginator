@@ -33,7 +33,7 @@
         <nav>
             <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {% if backs_fronts.0 %}
+                {% if backs_fronts %}
                     All your decks:
                     <table>
                         <tr>

@@ -20,17 +20,20 @@ def get_white_bg(bg_height: int, bg_width: int) -> cv.Mat:
     return result
 
 
-def get_spacing(bg_size: int, cards_size: int, cards_padding: int):
-    n_cards = bg_size // (cards_size + cards_padding)
+def get_spacing(bg_size: int, cards_size: int, cards_padding: int, min_space: int):
+    n_cards = bg_size // (cards_size + 2 * cards_padding)
     spacing = (bg_size - n_cards * cards_size) / (n_cards + 1)  # float
+    if spacing < min_space:
+        n_cards -= 1
+        spacing = (bg_size - n_cards * cards_size) / (n_cards + 1)  # float
     return spacing
     
 
-def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True, cards_padding: int = 0) -> cv.Mat:
+def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True, cards_padding: int = 0, min_space: int = 30) -> cv.Mat:
     result = get_white_bg(bg_height, bg_width)
 
-    height_spacing = get_spacing(bg_height, cards_height, cards_padding)
-    width_spacing = get_spacing(bg_width, cards_width, cards_padding)
+    height_spacing = get_spacing(bg_height, cards_height, cards_padding, min_space)
+    width_spacing = get_spacing(bg_width, cards_width, cards_padding, min_space)
 
     y = height_spacing
     while y <= bg_height:

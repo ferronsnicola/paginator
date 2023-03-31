@@ -73,12 +73,23 @@ def file_loader(request: HttpRequest):
 
             print([plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um])
 
-            if os.path.exists(session_dir):
-                filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um)
-                # filepath = cards_placer.get_output_file(session_dir, plotter_format, cf[0], cf[1], pad, frame_lines, um)
-                return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
-            else:
-                message_down += 'You need to upload some decks first!!!'
+            logic_error = False
+
+            if cards_height + 2 * pad > plotter_height:
+                message_down += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
+                logic_error = True
+            if cards_width + 2 * pad > plotter_width:
+                message_down += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
+                logic_error = True
+            # if get_spacing(plotter_height, cards_height)
+            
+
+            if not logic_error:
+                if os.path.exists(session_dir):
+                    filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um)
+                    return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+                else:
+                    message_down += 'You need to upload some decks first!!!'
 
 
         form = DeckForm()
@@ -100,5 +111,6 @@ def file_loader(request: HttpRequest):
 
     # Render list page with the documents and the form
     context = {'backs_fronts': zip(backs, filtered_fronts), 'form': form, 'message_up': message_up, 'message_down': message_down}
+    print(backs)
     return render(request, 'main_page.html', context)
 
