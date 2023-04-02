@@ -1,61 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        
         <title>Playing Cards Paginator</title>
-        <style>
-            .grid-container {
-                display: grid;
-                grid-template-columns: 3fr auto 3fr;
-                background-color: #2196F3;
-                padding: 10px;
-            }
-            .grid-item {
-                background-color: rgba(255, 255, 255, 0.8);
-                border: 1px solid rgba(0, 0, 0, 0.8);
-                padding: 20px;
-                font-size: 18px;
-                text-align:left;
-            }
-            table, th, td {
-                width: auto;
-                text-align: left;
-                padding-right: 40px;
-                border-color: black;
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-        </style>
     </head>
 
     <body>
-        <!-- List of uploaded documents -->
-        <nav>
-            <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {% if backs_fronts %}
-                    All your decks:
-                    <table>
-                        <tr>
-                            <th></th>
-                            <th>Back</th>
-                            <th>Front sample</th>
-                        </tr>
-
-                        {% for back, front in backs_fronts %}
-                            <tr>
-                                <td><p><input type="submit" value="Delete" name="{{back.group_name}}"/></p></td>
-                                <td><a href="{{ back.back.url }}" target="_blank">{{ back.group_name }}</a></td>
-                                <td><a href="{{ front.front.url }}" target="_blank">{{ front.group_name }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                {% else %}
-                    <p>There are no decks, load them below!</p>
-                {% endif %}
-            </form>
-        </nav>
-
         <div class="grid-container">
             <!-- Upload form. Note enctype attribute! -->
             <div class="grid-item">
@@ -98,11 +51,6 @@
                     {{ message_down }}
                     <p>{{ form.non_field_errors }}</p>
 
-                    <!-- <p>{{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}</p>
-                    <p>
-                        {{form.plotter_formats.errors}}
-                        {{form.plotter_formats}}
-                    </p> -->
                     <p>{{ form.plotter_height.label_tag }} {{ form.plotter_height.help_text }}(mm)</p>
                     <p>
                         {{form.plotter_height.errors}}
@@ -114,11 +62,6 @@
                         {{form.plotter_width}}
                     </p> 
 
-                    <!-- <p>{{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}</p>
-                    <p>
-                        {{ form.cards_formats.errors }}
-                        {{ form.cards_formats }}
-                    </p> -->
                     <p>{{ form.cards_height.label_tag }} {{ form.cards_height.help_text }}(mm)</p>
                     <p>
                         {{ form.cards_height.errors }}
@@ -136,12 +79,6 @@
                         {{ form.padding }}
                     </p>
 
-                    <!-- <p>{{ form.unit_of_measurement.label_tag }} {{ form.unit_of_measurement.help_text }}</p>
-                    <p>
-                        {{ form.unit_of_measurement.errors }}
-                        {{ form.unit_of_measurement }}
-                    </p> -->
-
                     <p>{{ form.cut_lines.label_tag }} {{ form.cut_lines.help_text }}</p>
                     <p>
                         {{ form.cut_lines.errors }}
@@ -157,6 +94,44 @@
                     <p><input type="submit" value="Confirm&Download", name="confirm&download"/></p>
                 </form>
             </div>
+        </div>
+        <!-- List of uploaded documents -->
+        <div class="container">
+            <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if backs_fronts %}
+                    All your decks:
+
+                    <div class="container text-center">
+                        <div class="row">
+                            {% for back, front in backs_fronts %}
+                                <div class="col">
+                                    <div class="card" style="width: 20rem;">
+
+                                        <div class="container text-center">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <img src="{{ front.front.url }}" class="card-img-top" alt="alt">   
+                                                </div>
+                                                <div class="col">
+                                                    <img src="{{ back.back.url }}" class="card-img-top" alt="alt">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ front.group_name }}</h5>
+                                            <p class="card-text">Front sample of the deck {{ front.group_name }}.</p>
+                                            <input type="submit" value="Delete" name="{{back.group_name}}" class="btn btn-primary"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p>There are no decks, load them below!</p>
+                {% endif %}
+            </form>
         </div>
     </body>
 </html>
