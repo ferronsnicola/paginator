@@ -107,10 +107,12 @@ def file_loader(request: HttpRequest):
             filtered_fronts.append(front)
             already_checked.add(front.short_name)
 
-
+    backs_fronts = (None, None)
+    if len(backs) > 0:
+        backs_fronts = zip(backs, filtered_fronts)
 
     # Render list page with the documents and the form
-    context = {'backs_fronts': zip(backs, filtered_fronts), 'form': form, 'message_up': message_up, 'message_down': message_down}
+    context = {'backs_fronts': backs_fronts, 'form': form, 'message_up': message_up, 'message_down': message_down}
     print(backs)
     return render(request, 'main_page.html', context)
 
