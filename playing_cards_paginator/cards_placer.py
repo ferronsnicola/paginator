@@ -59,7 +59,7 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
     for i in range(lfronts):
         images.append(Image.open(join(base_dir, 'output', f'front-{i}.png')).convert("RGB"))
         images.append(Image.open(join(base_dir, 'output', f'back-{i}.png')).convert("RGB"))
-    images[0].save(join(base_dir, 'output.pdf'), resolution=300.0, save_all=True, append_images=images[1:], quality=95)
+    images[0].save(join(base_dir, 'output.pdf'), resolution=300.0, save_all=True, append_images=images[1:], quality=100)
     
     # shutil.make_archive(join(base_dir, 'output'), 'zip', join(base_dir, 'output'))
     shutil.rmtree(join(base_dir, 'output'))
@@ -88,6 +88,14 @@ def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list
         raise Exception('cards unit of measurement must be in [mm, inch]!')
     
     return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color)
+
+
+def get_corner_cross_color(corner_color: tuple) -> tuple:
+    avg = (corner_color[0] + corner_color[1] + corner_color[2]) // 3
+    if avg > 64:
+        return (0, 0, 0)
+    else:
+        return (255, 255, 255)
     
 
 def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30) -> cv.Mat:
@@ -123,8 +131,27 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
                 card_pad = cv.copyMakeBorder(card, pad, pad, pad, pad, cv.BORDER_REPLICATE)
                 back_pad = cv.copyMakeBorder(back, pad, pad, pad, pad, cv.BORDER_REPLICATE)
 
+                corner_up_left = get_corner_cross_color(back[0][0])
+                corner_up_right = get_corner_cross_color(back[0][-1])
+                corner_down_left = get_corner_cross_color(back[-1][0])
+                corner_down_right = get_corner_cross_color(back[-1][-1])
+
+
+                back_pad = cv.line(back_pad, (2 * pad // 3, pad), (4 * pad // 3, pad), corner_up_left, 1)
+                back_pad = cv.line(back_pad, (pad, 2 * pad // 3), (pad, 4 * pad // 3), corner_up_left, 1)
+
+                back_pad = cv.line(back_pad, (2 * pad // 3, c_height + pad), (4 * pad // 3, c_height + pad), corner_down_left, 1)
+                back_pad = cv.line(back_pad, (pad, c_height + 2 * pad // 3), (pad, c_height + 4 * pad // 3), corner_down_left, 1)
+
+                back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, pad), (c_width + 4 * pad // 3, pad), corner_up_right, 1)
+                back_pad = cv.line(back_pad, (c_width + pad, 2 * pad // 3), (c_width + pad, 4 * pad // 3), corner_up_right, 1)
+
+                back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, c_height + pad), (c_width + 4 * pad // 3, c_height + pad), corner_down_right, 1)
+                back_pad = cv.line(back_pad, (c_width + pad, c_height + 2 * pad // 3), (c_width + pad, c_height + 4 * pad // 3), corner_down_right, 1)
+
                 background_fronts[yy : yy + c_height + 2 * pad, xx : xx + c_width + 2 * pad] = card_pad
                 background_backs[yy : yy + c_height + 2 * pad, bg_width - xx - (c_width + 2 * pad) : bg_width - xx] = back_pad
+
                 y += c_height + vertical_spacing
 
             if len(fronts) == 0:
