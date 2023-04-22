@@ -5,6 +5,7 @@ from os.path import isfile, join, isdir
 from . import um_conversions as umc
 import os
 import shutil
+from PIL import Image
 
 
 def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, cards_height: float, cards_width: float, pad: int, frame_lines: bool, um: str):
@@ -49,10 +50,20 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
     for i in range(len(fronts)):
         cv.imwrite(join(base_dir, 'output', f'front-{i}.png'), fronts[i])
         cv.imwrite(join(base_dir, 'output', f'back-{i}.png'), backs[i])
+
+    lfronts = len(fronts)
+    del(fronts)
+    del(backs)
+
+    images = []
+    for i in range(lfronts):
+        images.append(Image.open(join(base_dir, 'output', f'front-{i}.png')).convert("RGB"))
+        images.append(Image.open(join(base_dir, 'output', f'back-{i}.png')).convert("RGB"))
+    images[0].save(join(base_dir, 'output.pdf'), resolution=300.0, save_all=True, append_images=images[1:], quality=95)
     
-    shutil.make_archive(join(base_dir, 'output'), 'zip', join(base_dir, 'output'))
+    # shutil.make_archive(join(base_dir, 'output'), 'zip', join(base_dir, 'output'))
     shutil.rmtree(join(base_dir, 'output'))
-    return join(base_dir, 'output.zip')
+    return join(base_dir, 'output.pdf')
 
 
 def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300) -> cv.Mat:
