@@ -107,7 +107,7 @@ def file_loader(request: HttpRequest):
             filtered_fronts.append(front)
             already_checked.add(front.short_name)
 
-    backs_fronts = (None, None)
+    backs_fronts = None
     if len(backs) > 0:
         backs_fronts = zip(backs, filtered_fronts)
 
