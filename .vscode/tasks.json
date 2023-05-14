@@ -22,7 +22,7 @@
 				"platform": "linux/armv64"
 			},
 			"python": {
-				"file": "manage.py runserver"
+				"file": "manage.py runserver 0.0.0.0:8000"
 			}
 		}
 	]
