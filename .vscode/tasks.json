@@ -19,7 +19,13 @@
 				"docker-build"
 			],
 			"dockerRun": {
-				"platform": "linux/armv64"
+				"platform": "linux/armv64",
+				"ports": [
+					{
+						"containerPort": 8000,
+						"hostPort": 8000
+					}
+				]
 			},
 			"python": {
 				"file": "manage.py runserver 0.0.0.0:8000"
