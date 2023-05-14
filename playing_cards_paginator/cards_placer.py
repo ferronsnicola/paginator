@@ -59,7 +59,7 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
     for i in range(lfronts):
         images.append(Image.open(join(base_dir, 'output', f'front-{i}.png')).convert("RGB"))
         images.append(Image.open(join(base_dir, 'output', f'back-{i}.png')).convert("RGB"))
-    images[0].save(join(base_dir, 'output.pdf'), resolution=300.0, save_all=True, append_images=images[1:], quality=100)
+    images[0].save(join(base_dir, 'output.pdf'), resolution=300.0, save_all=True, append_images=images[1:], quality=95)
     
     # shutil.make_archive(join(base_dir, 'output'), 'zip', join(base_dir, 'output'))
     shutil.rmtree(join(base_dir, 'output'))
@@ -91,11 +91,19 @@ def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list
 
 
 def get_corner_cross_color(corner_color: tuple) -> tuple:
-    avg = (corner_color[0] + corner_color[1] + corner_color[2]) // 3
-    if avg > 64:
-        return (0, 0, 0)
-    else:
-        return (255, 255, 255)
+    # avg = (corner_color[0] + corner_color[1] + corner_color[2]) // 3
+    result = [0, 0, 0]
+    # if avg > 64:
+    #     result = corner_color // 1.2
+    # else:
+    #     result = corner_color * 1.2
+    for i in range(len(result)):
+        if corner_color[i] > 64:
+            result[i] = corner_color[i] // 1.2
+        else:
+            result[i] = corner_color[i] * 1.9
+    # print(f'{corner_color} - {result}')
+    return result
     
 
 def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30) -> cv.Mat:
