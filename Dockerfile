@@ -1,5 +1,5 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
-FROM --platform=linux/arm64 python:3.10
+FROM --platform=linux/amd64 python:3.10
 # FROM python:3.10
 
 # Keeps Python from generating .pyc files in the container
