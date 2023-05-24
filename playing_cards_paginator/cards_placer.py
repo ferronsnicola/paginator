@@ -66,10 +66,10 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
     return join(base_dir, 'output.pdf')
 
 
-def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300) -> cv.Mat:
+def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, min_space: int = 2) -> cv.Mat:
     bg_height, bg_width, c_height, c_width = umc.get_sizes_from_mm(bg_height_mm, bg_width_mm, c_height_mm, c_width_mm, dpi)
     pad = umc.mm_to_pixel(pad_mm, dpi)
-    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color)
+    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color, umc.mm_to_pixel(min_space, dpi))
 
 
 def get_files_from_inch(bg_height_inch: float, bg_width_inch: float, c_height_inch: float, c_width_inch: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_inch: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300) -> cv.Mat:
@@ -105,6 +105,12 @@ def get_corner_cross_color(corner_color: tuple) -> tuple:
     # print(f'{corner_color} - {result}')
     return result
     
+
+def check_consistency(cards_size: int, pad: int, bg_size: int, min_space_between_pad: int = 2) -> bool:
+    spacing = bgg.get_spacing(bg_size, cards_size, pad, min_space_between_pad)
+    print(f'spacing: {spacing}, min_space: {min_space_between_pad}')
+    return spacing - 2*pad > min_space_between_pad
+
 
 def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30) -> cv.Mat:
     result_front = []

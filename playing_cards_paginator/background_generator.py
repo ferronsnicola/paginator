@@ -29,7 +29,7 @@ def get_spacing(bg_size: int, cards_size: int, cards_padding: int, min_space: in
     return spacing
     
 
-def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True, cards_padding: int = 0, min_space: int = 30) -> cv.Mat:
+def get_cut_bg(bg_height: int, bg_width: int, cards_height: int, cards_width: int, cut_thickness: int = 1, cut_color: tuple[3] = (0, 0, 0), frame: bool = True, cards_padding: int = 0, min_space: int = 2) -> cv.Mat:
     result = get_white_bg(bg_height, bg_width)
 
     height_spacing = get_spacing(bg_height, cards_height, cards_padding, min_space)

@@ -75,10 +75,10 @@ def file_loader(request: HttpRequest):
 
             logic_error = False
 
-            if cards_height + 2 * pad > plotter_height:
+            if not cards_placer.check_consistency(cards_size=cards_height, pad=pad, bg_size=plotter_height):
                 message_down += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
                 logic_error = True
-            if cards_width + 2 * pad > plotter_width:
+            if not cards_placer.check_consistency(cards_size=cards_width, pad=pad, bg_size=plotter_width):
                 message_down += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
                 logic_error = True
             # if get_spacing(plotter_height, cards_height)
