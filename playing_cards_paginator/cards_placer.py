@@ -7,6 +7,25 @@ import os
 import shutil
 from PIL import Image
 
+plotter_formats = {
+    'junior-legal': (203, 127),
+    'letter': (279, 216),
+    'legal': (356, 216),
+    'tabloid': (432, 279),
+    'A4': (297, 210),
+    'A3': (420, 297),
+    'A2': (594, 420),
+    'A1': (841, 594),
+    'A0': (1189, 841)
+}
+
+cards_formats = {
+    'Magic-Pokemon': (88, 63.5),
+    'Yu-gi-oh!': (86, 59),  # to check
+    '7 Wonders': (100, 65),
+    '57.5x89': (89, 57.5),
+    '56x87': (87, 56),
+}
 
 def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, cards_height: float, cards_width: float, pad: int, cut_lines: bool, frame_lines: bool, um: str):
     fronts = []

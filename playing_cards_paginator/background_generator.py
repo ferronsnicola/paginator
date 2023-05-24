@@ -1,18 +1,6 @@
 import cv2 as cv
 import numpy as np
 
-print_formats = {
-    'junior-legal': (203, 127),
-    'letter': (279, 216),
-    'legal': (356, 216),
-    'tabloid': (432, 279),
-    'A4': (297, 210),
-    'A3': (420, 297),
-    'A2': (594, 420),
-    'A1': (841, 594),
-    'A0': (1189, 841)
-}
-
 
 def get_white_bg(bg_height: int, bg_width: int, frame: bool = False) -> cv.Mat:
     result = np.ones(shape=(bg_height, bg_width, 3), dtype=np.uint8)

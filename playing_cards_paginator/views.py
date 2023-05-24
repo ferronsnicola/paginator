@@ -55,47 +55,51 @@ def file_loader(request: HttpRequest):
 
 
     elif request.method == 'GET' and 'confirm&download' in request.GET:
-        # plotter_format = request.GET.get('plotter_formats', None)
-        plotter_height = int('0' + request.GET.get('plotter_height'))
-        # if plotter_format is not None:
-        if plotter_height is not None:
+        plotter_format = request.GET.get('plotter_formats', None)
+        if plotter_format == 'manual':
+            plotter_height = int('0' + request.GET.get('plotter_height'))
             plotter_width = int('0' + request.GET.get('plotter_width'))
-            
-            # cf = cards_formats.get_h_w_mm_from_format(request.GET.get('cards_formats', None))
+        else:
+            plotter_height, plotter_width = cards_placer.plotter_formats[plotter_format]
+        
+        cards_format = request.GET.get('cards_formats', None)
+        if cards_format == 'manual':
             cards_height = int('0' + request.GET.get('cards_height'))
             cards_width = int('0' + request.GET.get('cards_width'))
+        else:
+            cards_height, cards_width = cards_placer.cards_formats[cards_format]
 
-            pad = int('0' + request.GET.get('padding', 0))
-            um = request.GET.get('unit_of_measurement', None)
-            cut_lines = request.GET.get('cut_lines', False)
-            frame_lines = request.GET.get('frame_lines', False)
+        pad = int('0' + request.GET.get('padding', 0))
+        um = request.GET.get('unit_of_measurement', None)
+        cut_lines = request.GET.get('cut_lines', False)
+        frame_lines = request.GET.get('frame_lines', False)
 
-            session_dir = join(settings.MEDIA_ROOT, 'documents', session_key)
+        session_dir = join(settings.MEDIA_ROOT, 'documents', session_key)
 
-            print([plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um])
+        print([plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um])
 
-            logic_error = False
-            error_message = ''
+        logic_error = False
+        error_message = ''
 
-            if not cards_placer.check_consistency(cards_size=cards_height, pad=pad, bg_size=plotter_height):
-                error_message += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
+        if not cards_placer.check_consistency(cards_size=cards_height, pad=pad, bg_size=plotter_height):
+            error_message += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
+            logic_error = True
+        if not cards_placer.check_consistency(cards_size=cards_width, pad=pad, bg_size=plotter_width):
+            error_message += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
+            logic_error = True
+        # if get_spacing(plotter_height, cards_height)
+        
+
+        if not logic_error:
+            if os.path.exists(session_dir):
+                filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, cut_lines, frame_lines, um)
+                return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
+            else:
+                error_message += 'You need to upload some decks first!!!'
                 logic_error = True
-            if not cards_placer.check_consistency(cards_size=cards_width, pad=pad, bg_size=plotter_width):
-                error_message += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
-                logic_error = True
-            # if get_spacing(plotter_height, cards_height)
-            
-
-            if not logic_error:
-                if os.path.exists(session_dir):
-                    filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, cut_lines, frame_lines, um)
-                    return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
-                else:
-                    error_message += 'You need to upload some decks first!!!'
-                    logic_error = True
-            
-            if logic_error:
-                messages.error(request=request, message=error_message)
+        
+        if logic_error:
+            messages.error(request=request, message=error_message)
 
 
         form = DeckForm()
