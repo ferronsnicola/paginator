@@ -5,6 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <title>Playing Cards Paginator</title>
+    <style>
+        .container-fluid {
+            height: 100vh;
+            padding-top: 1rem;
+        }
+
+        .messages {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .messages li {
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .help-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .card-container .card {
+            width: 20rem;
+        }
+
+        @media (max-width: 576px) {
+            .container-fluid {
+                height: auto;
+                padding-bottom: 1rem;
+            }
+
+            .card-container .card {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body class="container h-10 px-0">
@@ -35,118 +81,148 @@
     <div class="row h-100">
         <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll">
             {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
+            <p class="text-center">{{ form.non_field_errors }}</p>
 
-            <p>{{ form.name.label_tag }} {{ form.name.help_text }}</p>
-            <p>
-                {{ form.name.errors }}
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Name:</label>
                 {{ form.name }}
-            </p>
+                {% if form.name.help_text %}
+                    <span class="help-text">{{ form.name.help_text }}</span>
+                {% endif %}
+                {% if form.name.errors %}
+                    <span class="text-danger">{{ form.name.errors }}</span>
+                {% endif %}
+            </div>
 
-            <p>{{ form.fronts.label_tag }} {{ form.fronts.help_text }}</p>
-            <p>
-                {{ form.fronts.errors }}
+            <div class="mb-3">
+                <label for="id_fronts" class="form-label">Fronts:</label>
                 {{ form.fronts }}
-            </p>
+                {% if form.fronts.help_text %}
+                    <span class="help-text">{{ form.fronts.help_text }}</span>
+                {% endif %}
+                {% if form.fronts.errors %}
+                    <span class="text-danger">{{ form.fronts.errors }}</span>
+                {% endif %}
+            </div>
 
-            <p>{{ form.back.label_tag }} {{ form.back.help_text }}</p>
-            <p>
-                {{ form.back.errors }}
+            <div class="mb-3">
+                <label for="id_back" class="form-label">Back:</label>
                 {{ form.back }}
-            </p>
+                {% if form.back.help_text %}
+                    <span class="help-text">{{ form.back.help_text }}</span>
+                {% endif %}
+                {% if form.back.errors %}
+                    <span class="text-danger">{{ form.back.errors }}</span>
+                {% endif %}
+            </div>
 
-            <p><input type="submit" value="Upload" name="upload" class="btn btn-primary"/></p>
+            <div class="text-center">
+                <input type="submit" value="Upload" name="upload" class="btn btn-primary"/>
+            </div>
         </form>
 
         <form action="{% url "file_loader" %}" method="get" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll">
             {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-        
-            <p>
-                {{ form.plotter_formats.label_tag }} {{ form.plotter_formats.help_text }}
+            <p class="text-center">{{ form.non_field_errors }}</p>
+
+            <div class="mb-3">
+                <label for="id_plotter_formats" class="form-label">Plotter Formats:</label>
+                {{ form.plotter_formats }}
+                {% if form.plotter_formats.help_text %}
+                    <span class="help-text">{{ form.plotter_formats.help_text }}</span>
+                {% endif %}
                 {% if form.plotter_formats.errors %}
                     <span class="text-danger">{{ form.plotter_formats.errors }}</span>
                 {% endif %}
-                {{ form.plotter_formats }}
-            </p> 
+            </div>
 
-            <p>{{ form.plotter_height.label_tag }}
+            <div class="mb-3">
+                <label for="id_plotter_height" class="form-label">Plotter Height:</label>
+                {{ form.plotter_height }}
                 {% if form.plotter_height.help_text %}
                     <span class="help-text">{{ form.plotter_height.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.plotter_height.errors }}
-                {{ form.plotter_height }}
-            </p> 
-        
-            <p>{{ form.plotter_width.label_tag }}
+                {% if form.plotter_height.errors %}
+                    <span class="text-danger">{{ form.plotter_height.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_plotter_width" class="form-label">Plotter Width:</label>
+                {{ form.plotter_width }}
                 {% if form.plotter_width.help_text %}
                     <span class="help-text">{{ form.plotter_width.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.plotter_width.errors }}
-                {{ form.plotter_width }}
-            </p> 
+                {% if form.plotter_width.errors %}
+                    <span class="text-danger">{{ form.plotter_width.errors }}</span>
+                {% endif %}
+            </div>
 
-            <p>
-                {{ form.cards_formats.label_tag }} {{ form.cards_formats.help_text }}
+            <div class="mb-3">
+                <label for="id_cards_formats" class="form-label">Cards Formats:</label>
+                {{ form.cards_formats }}
+                {% if form.cards_formats.help_text %}
+                    <span class="help-text">{{ form.cards_formats.help_text }}</span>
+                {% endif %}
                 {% if form.cards_formats.errors %}
                     <span class="text-danger">{{ form.cards_formats.errors }}</span>
                 {% endif %}
-                {{ form.cards_formats }}
-            </p>
-        
-            <p>{{ form.cards_height.label_tag }}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_cards_height" class="form-label">Cards Height:</label>
+                {{ form.cards_height }}
                 {% if form.cards_height.help_text %}
                     <span class="help-text">{{ form.cards_height.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.cards_height.errors }}
-                {{ form.cards_height }}
-            </p>
-        
-            <p>{{ form.cards_width.label_tag }}
+                {% if form.cards_height.errors %}
+                    <span class="text-danger">{{ form.cards_height.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_cards_width" class="form-label">Cards Width:</label>
+                {{ form.cards_width }}
                 {% if form.cards_width.help_text %}
                     <span class="help-text">{{ form.cards_width.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.cards_width.errors }}
-                {{ form.cards_width }}
-            </p>
-        
-            <p>{{ form.padding.label_tag }}
+                {% if form.cards_width.errors %}
+                    <span class="text-danger">{{ form.cards_width.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_padding" class="form-label">Padding:</label>
+                {{ form.padding }}
                 {% if form.padding.help_text %}
                     <span class="help-text">{{ form.padding.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.padding.errors }}
-                {{ form.padding }}
-            </p>
-        
-            <p>{{ form.cut_lines.label_tag }}
+                {% if form.padding.errors %}
+                    <span class="text-danger">{{ form.padding.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_cut_lines" class="form-label">Cut Lines:</label>
+                {{ form.cut_lines }}
                 {% if form.cut_lines.help_text %}
                     <span class="help-text">{{ form.cut_lines.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.cut_lines.errors }}
-                {{ form.cut_lines }}
-            </p>
-        
-            <p>{{ form.frame_lines.label_tag }}
+                {% if form.cut_lines.errors %}
+                    <span class="text-danger">{{ form.cut_lines.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_frame_lines" class="form-label">Frame Lines:</label>
+                {{ form.frame_lines }}
                 {% if form.frame_lines.help_text %}
                     <span class="help-text">{{ form.frame_lines.help_text }}</span>
                 {% endif %}
-            </p>
-            <p>
-                {{ form.frame_lines.errors }}
-                {{ form.frame_lines }}
-            </p>
+                {% if form.frame_lines.errors %}
+                    <span class="text-danger">{{ form.frame_lines.errors }}</span>
+                {% endif %}
+            </div>
 
             <script>
                 // JavaScript code to show/hide plotter height and width fields based on plotter formats selection
@@ -162,21 +238,24 @@
                 const cardsHeightLabel = document.querySelector("label[for='id_cards_height']");
                 const cardsWidthLabel = document.querySelector("label[for='id_cards_width']");
 
+                const cutLines = document.querySelector("#id_cut_lines");
+                const frameLines = document.querySelector("#id_frame_lines")
+
                 function updatePlotterFields() {
                     if (plotterFormatsField.value === "manual") {
                         plotterHeightField.disabled = false;
                         plotterWidthField.disabled = false;
-                        plotterHeightField.closest("p").style.display = "block";
-                        plotterWidthField.closest("p").style.display = "block";
-                        plotterHeightLabel.style.display = "block";
-                        plotterWidthLabel.style.display = "block";
+                        plotterHeightField.hidden = false;
+                        plotterWidthField.hidden = false;
+                        plotterHeightLabel.hidden = false;
+                        plotterWidthLabel.hidden = false;
                     } else {
                         plotterHeightField.disabled = true;
                         plotterWidthField.disabled = true;
-                        plotterHeightField.closest("p").style.display = "none";
-                        plotterWidthField.closest("p").style.display = "none";
-                        plotterHeightLabel.style.display = "none";
-                        plotterWidthLabel.style.display = "none";
+                        plotterHeightField.hidden = true;
+                        plotterWidthField.hidden = true;
+                        plotterHeightLabel.hidden = true;
+                        plotterWidthLabel.hidden = true;
                     }
                 }
 
@@ -184,29 +263,43 @@
                     if (cardsFormatsField.value === "manual") {
                         cardsHeightField.disabled = false;
                         cardsWidthField.disabled = false;
-                        cardsHeightField.closest("p").style.display = "block";
-                        cardsWidthField.closest("p").style.display = "block";
-                        cardsHeightLabel.style.display = "block";
-                        cardsWidthLabel.style.display = "block";
+                        cardsHeightField.hidden = false;
+                        cardsWidthField.hidden = false;
+                        cardsHeightLabel.hidden = false;
+                        cardsWidthLabel.hidden = false;
                     } else {
                         cardsHeightField.disabled = true;
                         cardsWidthField.disabled = true;
-                        cardsHeightField.closest("p").style.display = "none";
-                        cardsWidthField.closest("p").style.display = "none";
-                        cardsHeightLabel.style.display = "none";
-                        cardsWidthLabel.style.display = "none";
+                        cardsHeightField.hidden = true;
+                        cardsWidthField.hidden = true;
+                        cardsHeightLabel.hidden = true;
+                        cardsWidthLabel.hidden = true;
+                    }
+                }
+
+                function updateLines() {
+                    if (cutLines.checked === false) {
+                        frameLines.checked = false;
+                        frameLines.disabled = true;
+                    }
+                    else {
+                        frameLines.disabled = false;
                     }
                 }
         
                 plotterFormatsField.addEventListener("change", updatePlotterFields);
                 cardsFormatsField.addEventListener("change", updateCardsFields);
+                cutLines.addEventListener("change", updateLines);
         
                 // Call the function on page load to initialize the fields correctly
                 updatePlotterFields();
                 updateCardsFields();
+                updateLines();
             </script>
         
-            <p><input type="submit" value="Confirm & Download" name="confirm&download" class="btn btn-primary"/></p>
+            <div class="text-center">
+                <input type="submit" value="Confirm & Download" name="confirm&download" class="btn btn-primary"/>
+            </div>
         </form>
 
         <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll">
@@ -241,155 +334,3 @@
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-        
-        <title>Playing Cards Paginator</title>
-    </head>
-
-    <body class="container h-10 px-0">
-        <div class="container h-6em py-0">
-            <div class="row h-100 bg-secondary bg-gradient bg-opacity-25">
-                <div class="col">
-                    {{ message_up }}
-                </div>
-
-                <div class="col">
-                    {{ message_down }}
-                    {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </div>
-
-                <div class="col">
-                    All your decks
-                </div>
-            </div>
-        </div>
-
-        <div class="container" style="height: calc(100vh - 6em);">
-            <div class="row h-100">
-                <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll">
-                    {% csrf_token %}
-                    <p>{{ form.non_field_errors }}</p>
-
-                    <p>{{ form.name.label_tag }} {{ form.name.help_text }}</p>
-                    <p>
-                        {{form.name.errors}}
-                        {{form.name}}
-                    </p>
-
-                    <p>{{ form.fronts.label_tag }} {{ form.fronts.help_text }}</p>
-
-                    <p>
-                        {{ form.fronts.errors }}
-                        {{ form.fronts }}
-                    </p>
-
-                    <p>{{ form.back.label_tag }} {{ form.back.help_text }}</p>
-
-                    <p>
-                        {{ form.back.errors }}
-                        {{ form.back }}
-                    </p>
-
-                    <p><input type="submit" value="Upload", name="upload" class="btn btn-primary"/></p>
-                </form>
-
-                <form action="{% url "file_loader" %}" method=get" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll">
-                    {% csrf_token %}
-                    <p>{{ form.non_field_errors }}</p>
-
-                    <p>{{ form.plotter_height.label_tag }} {{ form.plotter_height.help_text }}(mm)</p>
-                    <p>
-                        {{form.plotter_height.errors}}
-                        {{form.plotter_height}}
-                    </p> 
-
-                    <p>{{ form.plotter_width.label_tag }} {{ form.plotter_width.help_text }}(mm)</p>
-                    <p>
-                        {{form.plotter_width.errors}}
-                        {{form.plotter_width}}
-                    </p> 
-                    
-                    <p>{{ form.cards_height.label_tag }} {{ form.cards_height.help_text }}(mm)</p>
-                    <p>
-                        {{ form.cards_height.errors }}
-                        {{ form.cards_height }}
-                    </p>
-
-                    <p>{{ form.cards_width.label_tag }} {{ form.cards_width.help_text }}(mm)</p>
-                    <p>
-                        {{ form.cards_width.errors }}
-                        {{ form.cards_width }}
-                    </p>
-
-                    <p>{{ form.padding.label_tag }} {{ form.padding.help_text }} (mm)</p>
-                    <p>
-                        {{ form.padding.errors }}
-                        {{ form.padding }}
-                    </p>
-
-                    <p> {{ form.cut_lines.label_tag }}
-                        {{ form.cut_lines.help_text }}
-                        {{ form.cut_lines.errors }}
-                        {{ form.cut_lines }}
-                    </p>
-
-                    <p> {{ form.frame_lines.label_tag }}
-                        {{ form.frame_lines.help_text }}
-                        {{ form.frame_lines.errors }}
-                        {{ form.frame_lines }}
-                    </p>    
-                    <p><input type="submit" value="Confirm&Download", name="confirm&download" class="btn btn-primary"/></p>
-                </form>
-
-                <form action="{% url "file_loader" %}" method="post" enctype="multipart/form-data" class="col bg-secondary bg-gradient bg-opacity-10 h-100 overflow-y-scroll" >
-                    {% csrf_token %}
-                    {% if backs_fronts %}
-                        {% for back, front in backs_fronts %}
-                            <div class="row py-2 px-4">
-                                <div class="card py-2" style="width: 20rem;">
-                                    <div class="container text-center">
-                                        <div class="row">
-                                            <div class="col">
-                                                <img src="{{ front.front.url }}" class="card-img-top" alt="alt">   
-                                            </div>
-                                            <div class="col">
-                                                <img src="{{ back.back.url }}" class="card-img-top" alt="alt">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ front.group_name }}</h5>
-                                        <p class="card-text">Card sample of the deck {{ front.group_name }}.</p>
-                                        <input type="submit" value="Delete" name="{{back.group_name}}" class="btn btn-primary"/>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <p>There are no decks</p>
-                    {% endif %}
-                </form>
-            </div>
-        </div>
-    </body>
-</html> -->
