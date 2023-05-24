@@ -8,6 +8,7 @@ import os
 from django.views.static import serve
 from django.http import HttpRequest
 import shutil
+from django.contrib import messages
 
 
 def file_loader(request: HttpRequest):
@@ -74,12 +75,13 @@ def file_loader(request: HttpRequest):
             print([plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um])
 
             logic_error = False
+            error_message = ''
 
             if not cards_placer.check_consistency(cards_size=cards_height, pad=pad, bg_size=plotter_height):
-                message_down += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
+                error_message += 'Plotter Height must be greater than Cards Height + 2 * Padding. '
                 logic_error = True
             if not cards_placer.check_consistency(cards_size=cards_width, pad=pad, bg_size=plotter_width):
-                message_down += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
+                error_message += 'Plotter Width must be greater than Cards Width + 2 * Padding. '
                 logic_error = True
             # if get_spacing(plotter_height, cards_height)
             
@@ -89,7 +91,11 @@ def file_loader(request: HttpRequest):
                     filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um)
                     return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
                 else:
-                    message_down += 'You need to upload some decks first!!!'
+                    error_message += 'You need to upload some decks first!!!'
+                    logic_error = True
+            
+            if logic_error:
+                messages.error(request=request, message=error_message)
 
 
         form = DeckForm()
