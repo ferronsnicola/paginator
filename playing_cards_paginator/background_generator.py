@@ -14,7 +14,7 @@ print_formats = {
 }
 
 
-def get_white_bg(bg_height: int, bg_width: int) -> cv.Mat:
+def get_white_bg(bg_height: int, bg_width: int, frame: bool = False) -> cv.Mat:
     result = np.ones(shape=(bg_height, bg_width, 3), dtype=np.uint8)
     result *= np.iinfo(result.dtype).max
     return result

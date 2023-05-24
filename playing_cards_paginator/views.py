@@ -88,7 +88,7 @@ def file_loader(request: HttpRequest):
 
             if not logic_error:
                 if os.path.exists(session_dir):
-                    filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, frame_lines, um)
+                    filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, cut_lines, frame_lines, um)
                     return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
                 else:
                     error_message += 'You need to upload some decks first!!!'
