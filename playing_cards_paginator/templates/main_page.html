@@ -311,17 +311,17 @@
                             <div class="container text-center">
                                 <div class="row">
                                     <div class="col">
-                                        <img src="{{ front.front.url }}" class="card-img-top" alt="alt">   
+                                        <img src="{{ front.file.url }}" class="card-img-top" alt="alt">   
                                     </div>
                                     <div class="col">
-                                        <img src="{{ back.back.url }}" class="card-img-top" alt="alt">
+                                        <img src="{{ back.file.url }}" class="card-img-top" alt="alt">
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title">{{ front.group_name }}</h5>
-                                <p class="card-text">Card sample of the deck {{ front.group_name }}.</p>
-                                <input type="submit" value="Delete" name="{{ back.group_name }}" class="btn btn-primary"/>
+                                <h5 class="card-title">{{ front.deck_name }}</h5>
+                                <p class="card-text">Card sample of the deck {{ front.deck_name }}.</p>
+                                <input type="submit" value="Delete" name="{{ back.deck_name }}" class="btn btn-primary"/>
                             </div>
                         </div>
                     </div>
