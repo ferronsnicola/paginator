@@ -46,4 +46,5 @@ class DeckForm(forms.Form):
     unit_of_measurement = forms.ChoiceField(label='Unit of Measurement', choices=ums, required=False)
 
     cut_lines = forms.BooleanField(required=False)
+    overlay_cut_cross = forms.BooleanField(required=False)
     frame_lines = forms.BooleanField(required=False)

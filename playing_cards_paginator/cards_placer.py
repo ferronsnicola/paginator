@@ -27,7 +27,7 @@ cards_formats = {
     '56x87': (87, 56),
 }
 
-def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, cards_height: float, cards_width: float, pad: int, cut_lines: bool, frame_lines: bool, um: str):
+def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, cards_height: float, cards_width: float, pad: int, cut_lines: bool, frame_lines: bool, um: str, overlay_cut_cross: bool = False):
     fronts = []
     backs = []
     fronts_dirs = [dir for dir in listdir(join(base_dir, 'fronts')) if isdir(join(base_dir, 'fronts', dir))]
@@ -62,7 +62,7 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
             fronts.append(front)
             backs.append(back)
 
-    fronts, backs = get_files_from_mm(plotter_height, plotter_width, cards_height, cards_width, fronts, backs, pad, frame_lines, cut_lines)
+    fronts, backs = get_files_from_mm(plotter_height, plotter_width, cards_height, cards_width, fronts, backs, pad, frame_lines, cut_lines, overlay_cut_cross=overlay_cut_cross)
     if not os.path.exists(join(base_dir, 'output')):
         os.mkdir(join(base_dir, 'output'))
 
@@ -85,19 +85,19 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
     return join(base_dir, 'output.pdf')
 
 
-def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, min_space: int = 2) -> cv.Mat:
+def get_files_from_mm(bg_height_mm: float, bg_width_mm: float, c_height_mm: float, c_width_mm: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_mm: float, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, min_space: int = 2, overlay_cut_cross: bool = False) -> cv.Mat:
     bg_height, bg_width, c_height, c_width = umc.get_sizes_from_mm(bg_height_mm, bg_width_mm, c_height_mm, c_width_mm, dpi)
     pad = umc.mm_to_pixel(pad_mm, dpi)
-    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_lines, cut_thickness, cut_color, umc.mm_to_pixel(min_space, dpi))
+    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_lines, cut_thickness, cut_color, umc.mm_to_pixel(min_space, dpi), overlay_cut_cross)
 
 
-def get_files_from_inch(bg_height_inch: float, bg_width_inch: float, c_height_inch: float, c_width_inch: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_inch: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300) -> cv.Mat:
+def get_files_from_inch(bg_height_inch: float, bg_width_inch: float, c_height_inch: float, c_width_inch: float, fronts: list[cv.Mat], backs: list[cv.Mat], pad_inch: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, overlay_cut_cross: bool = False) -> cv.Mat:
     bg_height, bg_width, c_height, c_width = umc.get_sizes_from_inch(bg_height_inch, bg_width_inch, c_height_inch, c_width_inch, dpi)
     pad = umc.inch_to_pixel(pad_inch, dpi)
-    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color)
+    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color, overlay_cut_cross)
 
 
-def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, cards_um: str = 'mm') -> cv.Mat:
+def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: float, frame: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), dpi: int = 300, cards_um: str = 'mm', overlay_cut_cross: bool = False) -> cv.Mat:
     bg_height, bg_width, c_height, c_width = umc.get_size_from_format(format, c_height, c_width, dpi, cards_um)
     if cards_um == 'mm':
         pad = umc.mm_to_pixel(pad, dpi)
@@ -106,7 +106,7 @@ def get_files_from_format(format: str, c_height: int, c_width: int, fronts: list
     else:
         raise Exception('cards unit of measurement must be in [mm, inch]!')
     
-    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color)
+    return get_files(bg_height, bg_width, c_height, c_width, fronts, backs, pad, frame, cut_thickness, cut_color, overlay_cut_cross)
 
 
 def get_corner_cross_color(corner_color: tuple) -> tuple:
@@ -131,7 +131,7 @@ def check_consistency(cards_size: int, pad: int, bg_size: int, min_space_between
     return spacing - 2*pad > min_space_between_pad
 
 
-def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30) -> cv.Mat:
+def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30, overlay_cut_cross: bool = False) -> cv.Mat:
     result_front = []
     result_back = []
 
@@ -167,23 +167,25 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
                 card_pad = cv.copyMakeBorder(card, pad, pad, pad, pad, cv.BORDER_REPLICATE)
                 back_pad = cv.copyMakeBorder(back, pad, pad, pad, pad, cv.BORDER_REPLICATE)
 
-                corner_up_left = get_corner_cross_color(back[0][0])
-                corner_up_right = get_corner_cross_color(back[0][-1])
-                corner_down_left = get_corner_cross_color(back[-1][0])
-                corner_down_right = get_corner_cross_color(back[-1][-1])
+                print(f'Overlay: {overlay_cut_cross}')
 
+                if overlay_cut_cross:
+                    corner_up_left = get_corner_cross_color(back[0][0])
+                    corner_up_right = get_corner_cross_color(back[0][-1])
+                    corner_down_left = get_corner_cross_color(back[-1][0])
+                    corner_down_right = get_corner_cross_color(back[-1][-1])
+                    
+                    back_pad = cv.line(back_pad, (2 * pad // 3, pad), (4 * pad // 3, pad), corner_up_left, 1)
+                    back_pad = cv.line(back_pad, (pad, 2 * pad // 3), (pad, 4 * pad // 3), corner_up_left, 1)
 
-                back_pad = cv.line(back_pad, (2 * pad // 3, pad), (4 * pad // 3, pad), corner_up_left, 1)
-                back_pad = cv.line(back_pad, (pad, 2 * pad // 3), (pad, 4 * pad // 3), corner_up_left, 1)
+                    back_pad = cv.line(back_pad, (2 * pad // 3, c_height + pad), (4 * pad // 3, c_height + pad), corner_down_left, 1)
+                    back_pad = cv.line(back_pad, (pad, c_height + 2 * pad // 3), (pad, c_height + 4 * pad // 3), corner_down_left, 1)
 
-                back_pad = cv.line(back_pad, (2 * pad // 3, c_height + pad), (4 * pad // 3, c_height + pad), corner_down_left, 1)
-                back_pad = cv.line(back_pad, (pad, c_height + 2 * pad // 3), (pad, c_height + 4 * pad // 3), corner_down_left, 1)
+                    back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, pad), (c_width + 4 * pad // 3, pad), corner_up_right, 1)
+                    back_pad = cv.line(back_pad, (c_width + pad, 2 * pad // 3), (c_width + pad, 4 * pad // 3), corner_up_right, 1)
 
-                back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, pad), (c_width + 4 * pad // 3, pad), corner_up_right, 1)
-                back_pad = cv.line(back_pad, (c_width + pad, 2 * pad // 3), (c_width + pad, 4 * pad // 3), corner_up_right, 1)
-
-                back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, c_height + pad), (c_width + 4 * pad // 3, c_height + pad), corner_down_right, 1)
-                back_pad = cv.line(back_pad, (c_width + pad, c_height + 2 * pad // 3), (c_width + pad, c_height + 4 * pad // 3), corner_down_right, 1)
+                    back_pad = cv.line(back_pad, (c_width + 2 * pad // 3, c_height + pad), (c_width + 4 * pad // 3, c_height + pad), corner_down_right, 1)
+                    back_pad = cv.line(back_pad, (c_width + pad, c_height + 2 * pad // 3), (c_width + pad, c_height + 4 * pad // 3), corner_down_right, 1)
 
                 background_fronts[yy : yy + c_height + 2 * pad, xx : xx + c_width + 2 * pad] = card_pad
                 background_backs[yy : yy + c_height + 2 * pad, bg_width - xx - (c_width + 2 * pad) : bg_width - xx] = back_pad

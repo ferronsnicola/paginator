@@ -233,6 +233,17 @@
                     <span class="text-danger">{{ form.cut_lines.errors }}</span>
                 {% endif %}
             </div>
+            
+            <div class="mb-3">
+                <label for="id_overlay_cut_cross" class="form-label">Overlay Cut-Cross:</label>
+                {{ form.overlay_cut_cross }}
+                {% if form.overlay_cut_cross.help_text %}
+                    <span class="help-text">{{ form.overlay_cut_cross.help_text }}</span>
+                {% endif %}
+                {% if form.overlay_cut_cross.errors %}
+                    <span class="text-danger">{{ form.overlay_cut_cross.errors }}</span>
+                {% endif %}
+            </div>
 
             <div class="mb-3">
                 <label for="id_frame_lines" class="form-label">Frame Lines:</label>

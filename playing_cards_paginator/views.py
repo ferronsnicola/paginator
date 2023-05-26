@@ -72,6 +72,7 @@ def download(request: HttpRequest, session_key):
     pad = int('0' + request.GET.get('padding', 0))
     um = request.GET.get('unit_of_measurement', None)
     cut_lines = request.GET.get('cut_lines', False)
+    overlay_cut_cross = request.GET.get('overlay_cut_cross', False)
     frame_lines = request.GET.get('frame_lines', False)
 
     session_dir = join(settings.MEDIA_ROOT, 'documents', session_key)
@@ -91,7 +92,7 @@ def download(request: HttpRequest, session_key):
 
     if not logic_error:
         if os.path.exists(session_dir):
-            filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, cut_lines, frame_lines, um)
+            filepath = cards_placer.get_output_file(session_dir, plotter_height, plotter_width, cards_height, cards_width, pad, cut_lines, frame_lines, um, overlay_cut_cross)
             return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
         else:
             error_message += 'You need to upload some decks first!!!'
