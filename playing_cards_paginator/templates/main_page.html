@@ -57,15 +57,27 @@
 <div class="container h-6em py-0">
     <div class="row h-100 bg-secondary bg-gradient bg-opacity-25">
         <div class="col">
-            {{ message_up }}
+            Upload your playing card decks, each front file of the deck should be inside a folder.
+            You should then select a back file and a name for the deck (group of cards) to identify it!
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    {% if 'upload' in message.tags %}
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
 
         <div class="col">
-            {{ message_down }}
+            Select export parameters and download the files.
             {% if messages %}
                 <ul class="messages">
                     {% for message in messages %}
-                        <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% if 'download' in message.tags %}
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -73,6 +85,15 @@
 
         <div class="col">
             All your decks
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    {% if 'delete' in message.tags %}
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
         </div>
     </div>
 </div>
