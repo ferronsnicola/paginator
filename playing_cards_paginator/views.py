@@ -10,6 +10,7 @@ from django.http import HttpRequest
 import shutil
 from django.contrib import messages
 
+ALLOWED_FORMATS = ('.png', '.jpg', '.jpeg', '.tif', '.tiff')
 
 def file_loader(request: HttpRequest):
     message_up = 'Upload your playing card decks, each front file of the deck should be inside a folder.\nYou should then select a back file and a name for the deck (group of cards) to identify it!'
@@ -24,17 +25,21 @@ def file_loader(request: HttpRequest):
         if form.is_valid():
             deck_name = request.POST['name']
             if CardFile.objects.filter(deck_name=deck_name).exists():
-                message_up = f'\nThe deck name {deck_name} already exists, change it!'
+                message_up += f'\nThe deck name {deck_name} already exists, change it!'
             elif 'back' in request.FILES and 'fronts' in request.FILES:
-                newdoc = CardFile(base_dir='backs', file=request.FILES['back'], deck_name=deck_name, session_id=session_key, short_name=f'{deck_name}/back')
-                newdoc.save()
-
-                for front in request.FILES.getlist('fronts'):
-                    newdoc = CardFile(base_dir='fronts', file=front, deck_name=deck_name, session_id=session_key, short_name=f'{deck_name}/front')
+                if str(request.FILES['back']).lower().endswith(ALLOWED_FORMATS):
+                    newdoc = CardFile(base_dir='backs', file=request.FILES['back'], deck_name=deck_name, session_id=session_key, short_name=f'{deck_name}/back')
                     newdoc.save()
 
-                # Redirect to the document list after POST
-                return redirect('file_loader')
+                    for front in request.FILES.getlist('fronts'):
+                        if str(front).lower().endswith(ALLOWED_FORMATS):
+                            newdoc = CardFile(base_dir='fronts', file=front, deck_name=deck_name, session_id=session_key, short_name=f'{deck_name}/front')
+                            newdoc.save()
+
+                    # Redirect to the document list after POST
+                    return redirect('file_loader')
+                else:
+                    message_up += f'\nThe back file must be a valid image format {ALLOWED_FORMATS}'
         else:
             message_up = 'The form is not valid. Fix the following error:'
 
@@ -122,6 +127,4 @@ def file_loader(request: HttpRequest):
 
     # Render list page with the documents and the form
     context = {'backs_fronts': backs_fronts, 'form': form, 'message_up': message_up, 'message_down': message_down}
-    print(message_up)
-    print(backs)
     return render(request, 'main_page.html', context)
