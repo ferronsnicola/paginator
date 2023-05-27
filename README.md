@@ -9,6 +9,10 @@ You can upload your decks specifying the name of it, an image file for the back 
 ![Image Alt Text](https://i.imgur.com/orIhuJN.png)
 
 After uploading decks, you can select the printing formats, like plotter height/width, cards height/widht and some other graphics that could help to cut the cards after the print!
+Plotter and Card formats could be common and you may select one of the available ones in the combo boxes, but you can also choose manual and insert height and width in millimeters.
+- Cut Lines are the black lines in the background
+- Overlay Cut-Cross is a little and low contrast cross that appear in the back of the cards if the checkbox is selected, they are useful because after a single linear cut you will loose the reference of the background cutting line! It is available only for the back of the cards because it is a good practice to cut them from the back.
+- Frame Lines are lines that could be drawn to check the correct alignment between back and front printing
 
 ![Image Alt Text](https://i.imgur.com/2DlvD88.png)
 
