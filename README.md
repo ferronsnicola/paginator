@@ -20,3 +20,6 @@ The output file will contain each cards with cutting lines like this:
 
 ![Image Alt Text](https://i.imgur.com/TNNRipa.png)
 
+
+An example of a complete page:
+![Image Alt Text](https://i.imgur.com/WD1L39O.png)
