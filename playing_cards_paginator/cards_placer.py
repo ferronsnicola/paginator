@@ -41,7 +41,7 @@ def get_output_file(base_dir: str, plotter_height: float, plotter_width: float, 
         
     
     for dir in fronts_dirs:
-        front_names = [card_name for card_name in listdir(join(base_dir, 'fronts', dir)) if isfile(join(base_dir, 'fronts', dir, card_name))]
+        front_names = sorted([card_name for card_name in listdir(join(base_dir, 'fronts', dir)) if isfile(join(base_dir, 'fronts', dir, card_name))])
         back_name = [card_name for card_name in listdir(join(base_dir,  'backs', dir)) if isfile(join(base_dir, 'backs', dir, card_name))][0]
         back = cv.imread(join(base_dir, 'backs', dir, back_name), cv.IMREAD_COLOR)
         if back is None:
@@ -126,12 +126,10 @@ def get_corner_cross_color(corner_color: tuple) -> tuple:
     
 
 def check_consistency(cards_size: int, pad: int, bg_size: int, min_space_between_pad: int = 2) -> bool:
-    spacing = bgg.get_spacing(bg_size, cards_size, pad, min_space_between_pad)
-    print(f'spacing: {spacing}, min_space: {min_space_between_pad}')
-    return spacing - 2*pad > min_space_between_pad
+    return cards_size + 2 * pad + 2 * min_space_between_pad < bg_size
 
 
-def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 30, overlay_cut_cross: bool = False) -> cv.Mat:
+def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts: list[cv.Mat], backs: list[cv.Mat], pad: int, frame: bool = True, cut_lines: bool = True, cut_thickness: int = 1, cut_color: tuple = (0, 0, 0), min_space: int = 2, overlay_cut_cross: bool = False) -> cv.Mat:
     result_front = []
     result_back = []
 
@@ -139,6 +137,7 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
         background = bgg.get_cut_bg(bg_height, bg_width, c_height, c_width, cut_thickness, cut_color, frame, pad, min_space)
     else:
         background = bgg.get_white_bg(bg_height, bg_width)
+
     vertical_spacing = bgg.get_spacing(bg_height, c_height, pad, min_space)
     horizontal_spacing = bgg.get_spacing(bg_width, c_width, pad, min_space)
     
@@ -150,9 +149,9 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
         background_fronts = background.copy()
         background_backs = background.copy()
 
-        while x <= bg_width - c_width - horizontal_spacing:
+        while y <= bg_height - c_height - vertical_spacing + 0.1:
             card = None
-            while y <= bg_height - c_height - vertical_spacing:
+            while x <= bg_width - c_width - horizontal_spacing + 0.1:
                 if len(fronts) == 0:
                     break
                 card = fronts.pop(0)
@@ -166,8 +165,6 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
 
                 card_pad = cv.copyMakeBorder(card, pad, pad, pad, pad, cv.BORDER_REPLICATE)
                 back_pad = cv.copyMakeBorder(back, pad, pad, pad, pad, cv.BORDER_REPLICATE)
-
-                print(f'Overlay: {overlay_cut_cross}')
 
                 if overlay_cut_cross:
                     corner_up_left = get_corner_cross_color(back[0][0])
@@ -190,13 +187,13 @@ def get_files(bg_height: int, bg_width: int, c_height: int, c_width: int, fronts
                 background_fronts[yy : yy + c_height + 2 * pad, xx : xx + c_width + 2 * pad] = card_pad
                 background_backs[yy : yy + c_height + 2 * pad, bg_width - xx - (c_width + 2 * pad) : bg_width - xx] = back_pad
 
-                y += c_height + vertical_spacing
+                x += c_width + horizontal_spacing
 
             if len(fronts) == 0:
                 break
 
-            x += c_width + horizontal_spacing
-            y = vertical_spacing
+            y += c_height + vertical_spacing
+            x = horizontal_spacing
 
         count += 1
         print(count)

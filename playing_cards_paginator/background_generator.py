@@ -11,7 +11,7 @@ def get_white_bg(bg_height: int, bg_width: int, frame: bool = False) -> cv.Mat:
 def get_spacing(bg_size: int, cards_size: int, cards_padding: int, min_space: int):
     n_cards = bg_size // (cards_size + 2 * cards_padding)
     spacing = (bg_size - n_cards * cards_size) / (n_cards + 1)  # float
-    if spacing < min_space:
+    while spacing - 2 * cards_padding < min_space:
         n_cards -= 1
         spacing = (bg_size - n_cards * cards_size) / (n_cards + 1)  # float
     return spacing
