@@ -18,5 +18,5 @@ For each uploaded deck, you could see an item that shows its name, back file and
 
 The output file will contain each cards with cutting lines like this:
 
-![Image Alt Text](https://imgur.com/TNNRipa)
+![Image Alt Text](https://i.imgur.com/TNNRipa.png)
 
